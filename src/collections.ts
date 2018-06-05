@@ -1,0 +1,86 @@
+export const USERS = 'users';
+export const USER_TYPES = 'userTypes';
+export const USER_LINKS = 'userLinks';
+export const FORUM_GROUPS = 'forumGroups';
+export const CANCER_TYPES = 'cancerTypes';
+export const MEDICATION_LIBRARY = 'medicationLibrary';
+export const NUTRIANT_LIBRARY = 'nutriantLibrary';
+export const NUTRIANT_SUPPLEMENT = 'nutriantSupplementLibrary';
+export const NUTRIANT_SUPPLEMENT_TYPE = 'nutriantSupplementType';
+export const NUTRIANT_TYPE = 'nutriantType';
+export const LINK_LIBRARY = 'linkLibrary';
+export const MEASUREMENT_LIBRARY = 'measurementLibrary';
+export const VIDEO_LINK_LIBRARY = 'videoLinkLibrary';
+export const HASH_TAG_LIBRARY = 'hashTagLibrary';
+export const DIARY_TYPE_LIBRARY = 'diaryTypes';
+export const SEND_MESSAGE = 'sendmessage';
+export const RESPONSE_MESSAGE = 'responsemessage';
+export const RECIPE = 'recipe';
+export const RECIPE_CATEGORY = 'recipeCategory';
+export const INGRIDENT = 'ingredient';
+
+export const TASKS = 'tasks';
+
+export const ENVENT_TYPE_MANUAL = 'Manual';
+export const ENVENT_TYPE_MEDICATION = 'Medication';
+export const ENVENT_TYPE_TRANSPORTATION = 'Transportation';
+export const ENVENT_TYPE_TREATMENT = 'Treatment';
+export const ENVENT_TYPE_MEASUREMENT = 'Measurement';
+export const ENVENT_MEDICATION_COLOR = 'Red';
+export const ENVENT_TRANSPORTATION_COLOR = 'Orange';
+
+export const MY_TREATMENT = 'myTreatment';
+export const CONTACTS = 'contacts';
+export const MY_EVENTS = 'myEvents';
+
+export const MY_NUTRIANT_LIBRARY = 'myNutriantLibrary';
+export const MY_NUTRIDRINK_LIBRARY = 'myNutriantNutriDrink';
+export const MY_RECIPE = 'myRecipe';
+export const MY_INGRIDENT = 'myIngredient';
+export const MY_DAILY_CONSUMPTION = 'myDailyConsumption';
+export const MY_MAIN_DAILY_CONSUMPTION = 'myMainDailyConsumption';
+
+export const MY_MEASUREMENT = 'measurements';
+export const MY_MEASURE = 'measures';
+export const MY_FAMILY = 'familyposts';
+export const MY_STORIES = 'mystories';
+export const MY_COMMENTS = 'comments';
+
+export const HEALTH_PROFILE = 'healthProfile';
+
+//My Medication
+export const MY_MEDICATION_LIBRARY = 'myMedicationLibrary';
+export const MY_MEDICATION_CABINET = 'myMedicationCabinet';
+export const MY_MEDICATION_HISTORY = 'myMedicationHistory';
+export const MY_MEDICATION_INTAKE = 'myMedicationIntake';
+
+export const MY_VIDEO_LINKS = 'videoLinks';
+export const MY_LINKS = 'mylinks';
+export const MY_DIARY = 'diaries';
+export const MY_IMAGES = 'images';
+export const MY_DOCUMENTS = 'documents';
+export const MY_INCOMMING_MESSAGES = 'mymessages';
+export const MY_DIAGNOSE = 'diagnose';
+
+export const USERTYPE_DEFAULT = 'Regulær';
+export const USERTYPE_REGULAR = 'Regulær';
+export const USERTYPE_ADMIN = 'Admin';
+export const USERTYPE_CANCER_COORDINATOR = 'Kreft koordinator';
+export const USERTYPE_MODERATOR = 'Moderator';
+export const USERTYPE_EXPERT = 'Forum Ekspert';
+export const USERTYPE_FAMILY = 'Family';
+export const USERTYPE_CANCER_NURSE = 'Kreftsykepleier';
+
+export const MY_IMAGE_DIRECTORY = 'assets/photos/';
+export const MY_DOCUMENT_DIRECTORY = 'assets/documents/';
+export const MY_PROFILE_IMAGE_DIRECTORY = 'assets/images/';
+
+export const weekDays = [
+  'Søndag',
+  'Mandag',
+  'Tirsdag',
+  'Onsdag',
+  'Torsdag',
+  'Fredag',
+  'Lørdag'
+];

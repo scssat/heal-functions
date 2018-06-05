@@ -1,0 +1,33 @@
+export interface CalendarEvent {
+  id?: string;
+  dbId?: string;
+  title?: string;
+  location?: string;
+  description?: string;
+  start?: any;
+  end?: any;
+  eventDate?: string;
+  allDay?: boolean;
+  editable?: boolean;
+  startEditable?: boolean;
+  duartionEditable?: boolean;
+  resourceEditable?: boolean;
+  overlap?: boolean;
+  className?: string;
+  notification?: number;
+  color?: string;
+  backgroundColor?: string;
+  borderColor?: string;
+  textColor?: string;
+  url?: string;
+  completed?: boolean;
+  measuremendtId?: string;
+  treatmentId?: string;
+  medicationCabinetId?: string;
+  parentId?: string;
+  weekNo?: number;
+  contactId?: string;
+  contactPerson?: string;
+  type?: string;
+  comment?: string;
+}
