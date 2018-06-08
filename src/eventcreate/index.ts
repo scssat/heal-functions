@@ -17,11 +17,14 @@ export const createEvents = functions.https.onRequest(async (req, res) => {
     .orderBy('email', 'asc')
     .get()
     .then(querySnapshot => {
-      let users = [];
+      const users = [];
       const medications = [];
       const measurements = [];
-      users = querySnapshot.docs;
+      querySnapshot.forEach(doc => {
+        users.push(doc.data());
+      });
 
+      //res.send(users);
       users.forEach(user => {
         const docRefMedication = admin
           .firestore()
@@ -36,7 +39,7 @@ export const createEvents = functions.https.onRequest(async (req, res) => {
         // Create medication events in calendar
         docRefMedication
           .where('active', '==', true)
-          .orderBy('name', 'asc')
+          .orderBy('medicationName', 'asc')
           .get()
           .then(querySnapshot1 => {
             querySnapshot1.forEach(doc => {
@@ -54,16 +57,17 @@ export const createEvents = functions.https.onRequest(async (req, res) => {
                 user.email
               );
             });
+            console.log(
+              `Number of medications (user:${user.email}) analyzed for events:${
+                medications.length
+              }`
+            );
           })
-          .catch(err =>
-            console.log(`Error when reading medications! - ${err}`)
-          );
+          .catch(err => {
+            console.log(`Error when reading medications! - ${err}`);
+            res.status(500).send(err);
+          });
 
-        console.log(
-          `Number of medications (user:${user.email}) analyzed for events:${
-            medications.length
-          }`
-        );
         // Create meaurement events in calendar
         docRefMeasurement
           .where('copyToCalendar', '==', true)
@@ -88,13 +92,20 @@ export const createEvents = functions.https.onRequest(async (req, res) => {
               }`
             );
           })
-          .catch(err =>
-            console.log(`Error when reading measurements! - ${err}`)
-          );
+          .catch(err => {
+            console.log(`Error when reading measurements! - ${err}`);
+            res.status(500).send(err);
+          });
         console.log(`Number users analyzed:${users.length}`);
+        res.send(
+          'Create calendar event trigger: execution successfully completed!'
+        );
       });
     })
-    .catch(err => console.log(`Error when reading users! - ${err}`));
+    .catch(err => {
+      console.log(`Error when reading users! - ${err}`);
+      res.end();
+    });
 });
 
 function createMedicationEvents(id, medicationCabinet, email) {
@@ -219,9 +230,17 @@ function createEvent(id, medicationCabinet, time, email) {
     eventDate: moment()
       .format('l')
       .toString(),
-    start: moment(startTimeDate).add(2, 'hours'),
+    start: new Date(
+      moment(startTimeDate)
+        .add(2, 'hours')
+        .toString()
+    ),
     weekNo: 0,
-    end: moment(endTimeDate).add(2, 'hours'),
+    end: new Date(
+      moment(endTimeDate)
+        .add(2, 'hours')
+        .toString()
+    ),
     parentId: '',
     allDay: false,
     editable: false,
@@ -254,28 +273,9 @@ function createEvent(id, medicationCabinet, time, email) {
   newCalendarEvent(calendarEvent, email);
 }
 
-function updateMedicationCabinet(id, medicationCabinet, email) {
-  const docRef = admin
-    .firestore()
-    .collection(`${shared.USERS}/${email}/${shared.MY_MEDICATION_CABINET}`)
-    .doc(id);
-  docRef.update(medicationCabinet);
-}
-
-function newCalendarEvent(calendarEvent, email) {
-  admin
-    .firestore()
-    .collection(`${shared.USERS}/${email}/${shared.MY_EVENTS}`)
-    .add(calendarEvent);
-}
-
 function createMeasurementWrapper(id, myMeasurement, email) {
   moment.locale('nb');
   let updateCalendar: boolean = false;
-
-  // const timeNow = moment(new Date())
-  //   .format('LT')
-  //   .toString();
 
   for (const time of myMeasurement.times) {
     createMeasurementEvent(id, myMeasurement, time, email);
@@ -285,14 +285,6 @@ function createMeasurementWrapper(id, myMeasurement, email) {
   if (updateCalendar) {
     updateMyMeasurement(id, myMeasurement, email);
   }
-}
-
-function updateMyMeasurement(id, myMeasurement, email) {
-  const docRef = admin
-    .firestore()
-    .collection(`${shared.USERS}/${email}/${shared.MY_MEASUREMENT}`)
-    .doc(id);
-  docRef.update(myMeasurement);
 }
 
 function createMeasurementEvent(id, myMeasurement, time, email) {
@@ -318,9 +310,17 @@ function createMeasurementEvent(id, myMeasurement, time, email) {
     eventDate: moment()
       .format('l')
       .toString(),
-    start: moment(startTimeDate).add(2, 'hours'),
+    start: new Date(
+      moment(startTimeDate)
+        .add(2, 'hours')
+        .toString()
+    ),
     weekNo: 0,
-    end: moment(endTimeDate).add(2, 'hours'),
+    end: new Date(
+      moment(endTimeDate)
+        .add(2, 'hours')
+        .toString()
+    ),
     parentId: '',
     allDay: false,
     editable: true,
@@ -346,4 +346,38 @@ function createMeasurementEvent(id, myMeasurement, time, email) {
   };
 
   newCalendarEvent(calendarEvent, email);
+}
+
+function updateMedicationCabinet(id, medicationCabinet, email) {
+  // console.log('Medication update!');
+  // console.log(medicationCabinet.medicationName);
+  const docRef = admin
+    .firestore()
+    .collection(`${shared.USERS}/${email}/${shared.MY_MEDICATION_CABINET}`)
+    .doc(id);
+  docRef.update(medicationCabinet).catch(err => {
+    console.log(`Error when updating medication! - ${err}`);
+  });
+}
+
+function newCalendarEvent(calendarEvent, email) {
+  // console.log('Event create!');
+  // console.log(calendarEvent);
+  admin
+    .firestore()
+    .collection(`${shared.USERS}/${email}/${shared.MY_EVENTS}`)
+    .add(calendarEvent)
+    .catch(err => {
+      console.log(`Error when adding calendar event! - ${err}`);
+    });
+}
+
+function updateMyMeasurement(id, myMeasurement, email) {
+  const docRef = admin
+    .firestore()
+    .collection(`${shared.USERS}/${email}/${shared.MY_MEASUREMENT}`)
+    .doc(id);
+  docRef.update(myMeasurement).catch(err => {
+    console.log(`Error when adding calendar event! - ${err}`);
+  });
 }
