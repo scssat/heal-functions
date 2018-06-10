@@ -230,17 +230,9 @@ function createEvent(id, medicationCabinet, time, email) {
     eventDate: moment()
       .format('l')
       .toString(),
-    start: new Date(
-      moment(startTimeDate)
-        .add(2, 'hours')
-        .toString()
-    ),
+    start: new Date(startTimeDate),
+    end: new Date(endTimeDate),
     weekNo: 0,
-    end: new Date(
-      moment(endTimeDate)
-        .add(2, 'hours')
-        .toString()
-    ),
     parentId: '',
     allDay: false,
     editable: false,
@@ -310,17 +302,9 @@ function createMeasurementEvent(id, myMeasurement, time, email) {
     eventDate: moment()
       .format('l')
       .toString(),
-    start: new Date(
-      moment(startTimeDate)
-        .add(2, 'hours')
-        .toString()
-    ),
+    start: new Date(startTimeDate),
+    end: new Date(endTimeDate),
     weekNo: 0,
-    end: new Date(
-      moment(endTimeDate)
-        .add(2, 'hours')
-        .toString()
-    ),
     parentId: '',
     allDay: false,
     editable: true,
