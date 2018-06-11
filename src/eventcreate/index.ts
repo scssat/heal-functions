@@ -5,10 +5,6 @@ import * as shared from '../collections';
 import { CalendarEvent } from '../models/event.model';
 admin.initializeApp();
 
-//const db = admin.database();
-
-/// WORKERS ///
-
 export const createEvents = functions.https.onRequest(async (req, res) => {
   const docRef = admin.firestore().collection(shared.USERS);
 
