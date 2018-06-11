@@ -1,10 +1,6 @@
 import * as eventcreate from './eventcreate';
-
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+import * as pushnotif from './push-notifications';
 
 export const createEvents = eventcreate.createEvents;
+export const pushSupport = pushnotif.supportNotification;
+export const pushStory = pushnotif.storyNotification;
