@@ -27,9 +27,9 @@ export const sendStoryNotification = functions.firestore
       const notification = {
         created: new Date(),
         from: userEmail,
-        decription: 'Støtte post',
-        type: 'support',
-        link: '/mysociety/mycomments/',
+        decription: 'Ny kommentar til Min historie er opprettet',
+        type: 'MyStoryComment',
+        link: '/mysociety/myhistories',
         id: storyId
       };
       notRef
