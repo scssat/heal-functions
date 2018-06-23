@@ -298,8 +298,18 @@ function createMeasurementEvent(id, myMeasurement, time, email) {
     eventDate: moment()
       .format('l')
       .toString(),
-    start: new Date(startTimeDate),
-    end: new Date(endTimeDate),
+    start: new Date(
+      moment(startTimeDate)
+        .subtract(2, 'hours')
+        .format()
+        .toString()
+    ),
+    end: new Date(
+      moment(endTimeDate)
+        .subtract(2, 'hours')
+        .format()
+        .toString()
+    ),
     weekNo: 0,
     parentId: '',
     allDay: false,
