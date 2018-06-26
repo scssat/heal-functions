@@ -53,6 +53,7 @@ export const MY_MEDICATION_LIBRARY = 'myMedicationLibrary';
 export const MY_MEDICATION_CABINET = 'myMedicationCabinet';
 export const MY_MEDICATION_HISTORY = 'myMedicationHistory';
 export const MY_MEDICATION_INTAKE = 'myMedicationIntake';
+export const MY_MEDICATION_COMPLIANCE = 'myMedicationCompliance';
 
 export const MY_VIDEO_LINKS = 'videoLinks';
 export const MY_LINKS = 'mylinks';

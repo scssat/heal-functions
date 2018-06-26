@@ -52,6 +52,35 @@ export const createEvents = functions.https.onRequest(async (req, res) => {
                 medication.data,
                 user.email
               );
+
+              moment.locale('nb');
+              // Should have a check if the record has been
+              const medicationCompliance = {
+                id: '',
+                medicationCabinetId: medication.id,
+                medicationHistoryId: '',
+                frequence: medication.frequencyValue,
+                createdDate: new Date(),
+                keyDate: moment(new Date())
+                  .format('l')
+                  .toString(),
+                plannedIntakeToday: medication.timesPerDayValue,
+                actualIntakeToday: 0
+              };
+
+              admin
+                .firestore()
+                .collection(
+                  `${shared.USERS}/${user.email}/${
+                    shared.MY_MEDICATION_COMPLIANCE
+                  }`
+                )
+                .add(medicationCompliance)
+                .catch(err => {
+                  console.log(
+                    `Error when adding medication compliance! - ${err}`
+                  );
+                });
             });
             console.log(
               `Number of medications (user:${user.email}) analyzed for events:${
@@ -226,8 +255,18 @@ function createEvent(id, medicationCabinet, time, email) {
     eventDate: moment()
       .format('l')
       .toString(),
-    start: new Date(startTimeDate),
-    end: new Date(endTimeDate),
+    start: new Date(
+      moment(startTimeDate)
+        .subtract(2, 'hours')
+        .format()
+        .toString()
+    ),
+    end: new Date(
+      moment(endTimeDate)
+        .subtract(2, 'hours')
+        .format()
+        .toString()
+    ),
     weekNo: 0,
     parentId: '',
     allDay: false,
@@ -339,8 +378,6 @@ function createMeasurementEvent(id, myMeasurement, time, email) {
 }
 
 function updateMedicationCabinet(id, medicationCabinet, email) {
-  // console.log('Medication update!');
-  // console.log(medicationCabinet.medicationName);
   const docRef = admin
     .firestore()
     .collection(`${shared.USERS}/${email}/${shared.MY_MEDICATION_CABINET}`)
@@ -351,8 +388,6 @@ function updateMedicationCabinet(id, medicationCabinet, email) {
 }
 
 function newCalendarEvent(calendarEvent, email) {
-  // console.log('Event create!');
-  // console.log(calendarEvent);
   admin
     .firestore()
     .collection(`${shared.USERS}/${email}/${shared.MY_EVENTS}`)
