@@ -28,6 +28,8 @@ export const createEvents = functions.https.onRequest(async (req, res) => {
             `${shared.USERS}/${user.email}/${shared.MY_MEDICATION_CABINET}`
           );
 
+        //console.log(shared.USERS, user.email, shared.MY_MEDICATION_CABINET);
+
         const docRefMeasurement = admin
           .firestore()
           .collection(`${shared.USERS}/${user.email}/${shared.MY_MEASUREMENT}`);
@@ -52,35 +54,6 @@ export const createEvents = functions.https.onRequest(async (req, res) => {
                 medication.data,
                 user.email
               );
-
-              moment.locale('nb');
-              // Should have a check if the record has been
-              const medicationCompliance = {
-                id: '',
-                medicationCabinetId: medication.id,
-                medicationHistoryId: '',
-                frequence: medication.frequencyValue,
-                createdDate: new Date(),
-                keyDate: moment(new Date())
-                  .format('l')
-                  .toString(),
-                plannedIntakeToday: medication.timesPerDayValue,
-                actualIntakeToday: 0
-              };
-
-              admin
-                .firestore()
-                .collection(
-                  `${shared.USERS}/${user.email}/${
-                    shared.MY_MEDICATION_COMPLIANCE
-                  }`
-                )
-                .add(medicationCompliance)
-                .catch(err => {
-                  console.log(
-                    `Error when adding medication compliance! - ${err}`
-                  );
-                });
             });
             console.log(
               `Number of medications (user:${user.email}) analyzed for events:${
@@ -229,6 +202,7 @@ function createEventWrapper(id, medicationCabinet, email) {
   }
   if (updateCalendar) {
     updateMedicationCabinet(id, medicationCabinet, email);
+    createComplianceRecord(id, medicationCabinet, email);
   }
 }
 
@@ -385,6 +359,33 @@ function updateMedicationCabinet(id, medicationCabinet, email) {
   docRef.update(medicationCabinet).catch(err => {
     console.log(`Error when updating medication! - ${err}`);
   });
+}
+
+function createComplianceRecord(id, medicationCabinet, email) {
+  moment.locale('nb');
+  // Should have a check if the record has been
+
+  const medicationCompliance = {
+    id: '',
+    medicationCabinetId: id,
+    medicationHistoryId: '',
+    medicationName: medicationCabinet.medicationName,
+    frequence: medicationCabinet.frequencyValue,
+    createdDate: new Date(),
+    keyDate: moment(new Date())
+      .format('l')
+      .toString(),
+    plannedIntakeToday: medicationCabinet.timesPerDayValue,
+    actualIntakeToday: 0
+  };
+
+  admin
+    .firestore()
+    .collection(`${shared.USERS}/${email}/${shared.MY_MEDICATION_COMPLIANCE}`)
+    .add(medicationCompliance)
+    .catch(err => {
+      console.log(`Error when adding medication compliance! - ${err}`);
+    });
 }
 
 function newCalendarEvent(calendarEvent, email) {
