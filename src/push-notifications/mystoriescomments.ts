@@ -8,7 +8,6 @@ export const sendStoryNotification = functions.firestore
     const comment = change.after.exists ? change.after.data() : null;
     const userEmail = comment.userid;
     const storyId = context.params.storyId;
-    console.log('Notification to user:', userEmail);
 
     if (!comment.owner) {
       // Message details for end user
@@ -16,31 +15,38 @@ export const sendStoryNotification = functions.firestore
         notification: {
           title: 'Ny post fra familen!',
           body: `${comment.userid} har opprettet ny post til deg`,
-          icon: '//https://icons8.com/icon/65838/open-view-in-new-tab'
+          icon: '//https://placeimg.com/200/200/any'
         }
       };
 
       // ref to the parent document
       const db = admin.firestore();
-      const storyRef = db.collection('my').doc(storyId);
-      const notRef = db.collection(`users/${userEmail}/notifications`);
-      const notification = {
-        created: new Date(),
-        from: userEmail,
-        decription: 'Ny kommentar til Min historie er opprettet',
-        type: 'MyStoryComment',
-        link: '/mysociety/myhistories',
-        id: storyId
-      };
-      notRef
-        .add(notification)
-        .catch(err => console.log('ERROR - Create notification:', err));
+
+      const storyRef = db.collection('mystories').doc(storyId);
       // get users tokens and send notifications
       return storyRef
         .get()
         .then(snapshot1 => snapshot1.data())
         .then(story => {
+          const notificationEmail = story.userid;
+          const notRef = db.collection(
+            `users/${notificationEmail}/notifications`
+          );
+          const notification = {
+            created: new Date(),
+            from: userEmail,
+            decription: 'Ny kommentar til Min historie er opprettet',
+            type: 'MyStoryComment',
+            link: '/mysociety/myhistories',
+            id: storyId
+          };
+
+          notRef
+            .add(notification)
+            .catch(err => console.log('ERROR - Creating notification:', err));
+
           const userRef = db.collection('users').doc(story.userid);
+
           userRef
             .get()
             .then(snapshot => snapshot.data())
@@ -51,7 +57,7 @@ export const sendStoryNotification = functions.firestore
                 throw new Error('User does not have any tokens!');
               }
 
-              console.log('Notification sendt to user:', userEmail);
+              console.log('Notification sendt to user:', notificationEmail);
               return admin.messaging().sendToDevice(tokens, payload);
             })
             .catch(err => console.log(err));

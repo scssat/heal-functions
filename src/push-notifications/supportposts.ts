@@ -15,7 +15,7 @@ export const sendSupportNotification = functions.firestore
         notification: {
           title: 'Ny post fra familen!',
           body: `${post.userid} har opprettet ny post til deg`,
-          icon: '//https://icons8.com/icon/65838/open-view-in-new-tab'
+          icon: '//https://placeimg.com/200/200/any'
         }
       };
 
