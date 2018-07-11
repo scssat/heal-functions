@@ -4,8 +4,8 @@ import * as functions from 'firebase-functions';
 
 export const sendStoryNotification = functions.firestore
   .document('mystories/{storyId}/comments/{commentId}')
-  .onWrite((change, context) => {
-    const comment = change.after.exists ? change.after.data() : null;
+  .onCreate((snap, context) => {
+    const comment = snap.data();
     const userEmail = comment.userid;
     const storyId = context.params.storyId;
 

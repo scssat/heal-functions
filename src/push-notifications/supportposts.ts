@@ -4,9 +4,9 @@ import * as functions from 'firebase-functions';
 
 export const sendSupportNotification = functions.firestore
   .document(`users/{userEmail}/familyposts/{myfamId}`)
-  .onWrite((change, context) => {
+  .onCreate((snap, context) => {
     const userEmail = context.params.userEmail;
-    const post = change.after.exists ? change.after.data() : null;
+    const post = snap.data();
     console.log('Notification to user:', userEmail);
 
     if (!post.owner) {

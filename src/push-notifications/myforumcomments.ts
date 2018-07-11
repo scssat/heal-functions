@@ -4,8 +4,8 @@ import * as functions from 'firebase-functions';
 
 export const sendForumNotification = functions.firestore
   .document('forumcomments/{id}')
-  .onWrite((change, context) => {
-    const comment = change.after.exists ? change.after.data() : null;
+  .onCreate((snap, context) => {
+    const comment = snap.data();
     const forumPostId = comment.forumPostId;
     const userEmail = comment.email;
     const displayUser = comment.displayUser;
