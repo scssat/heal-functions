@@ -259,7 +259,7 @@ function createEvent(id, medicationCabinet, time, email) {
     measuremendtId: '',
     treatmentId: '',
     notification:
-      medicationCabinet.notification == 0 ? 2 : medicationCabinet.notification,
+      medicationCabinet.notification === 0 ? 2 : medicationCabinet.notification,
     medicationCabinetId: id,
     contactId: '',
     contactPerson: '',

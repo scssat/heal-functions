@@ -13,7 +13,6 @@ export const dmSendMessage = functions.firestore
     const userEmail = dmMessage.toUserId;
     const ownerId = dmMessage.toUserId;
     const displayUser = dmMessage.displayUser;
-    const id = context.params.id;
     const db = admin.firestore();
 
     const sendDM = {
@@ -28,7 +27,7 @@ export const dmSendMessage = functions.firestore
     };
 
     // Check if user is commenting his own post
-    if (dmMessage.fromUserId != dmMessage.ownerId) {
+    if (dmMessage.fromUserId !== dmMessage.ownerId) {
       // Check if this is the first message
       const dmUserRef = db.collection('dmusers').doc(fromUserId);
 
@@ -89,7 +88,7 @@ export const dmSendMessage = functions.firestore
 
           userRef
             .get()
-            .then(snapshot => snapshot.data())
+            .then(snapshot1 => snapshot1.data())
             .then(user => {
               const tokens = user.fcmTokens ? Object.keys(user.fcmTokens) : [];
 

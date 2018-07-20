@@ -7,9 +7,8 @@ export const sendForumNotification = functions.firestore
   .onCreate((snap, context) => {
     const comment = snap.data();
     const forumPostId = comment.forumPostId;
-    const userEmail = comment.email;
     const displayUser = comment.displayUser;
-    const id = context.params.id;
+    //const id = context.params.id;
 
     // Check if user is commenting his own post
     if (!comment.owner) {

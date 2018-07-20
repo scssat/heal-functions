@@ -6,7 +6,7 @@ export const sendStoryNotification = functions.firestore
   .document('mystories/{storyId}/comments/{commentId}')
   .onCreate((snap, context) => {
     const comment = snap.data();
-    const userEmail = comment.userid;
+    //const userEmail = comment.userid;
     const displayUser = comment.author;
     const storyId = context.params.storyId;
 
