@@ -7,6 +7,7 @@ export const sendStoryNotification = functions.firestore
   .onCreate((snap, context) => {
     const comment = snap.data();
     const userEmail = comment.userid;
+    const displayUser = comment.author;
     const storyId = context.params.storyId;
 
     if (!comment.owner) {
@@ -14,7 +15,7 @@ export const sendStoryNotification = functions.firestore
       const payload = {
         notification: {
           title: 'Ny post fra familen!',
-          body: `${comment.userid} har opprettet ny post til deg`,
+          body: `${displayUser} har opprettet ny post til deg`,
           icon: '//https://placeimg.com/200/200/any'
         }
       };
@@ -34,8 +35,8 @@ export const sendStoryNotification = functions.firestore
           );
           const notification = {
             created: new Date(),
-            from: userEmail,
-            decription: 'Ny kommentar til Min historie er opprettet',
+            from: displayUser,
+            decription: 'Ny kommentar til historie er opprettet',
             type: 'MyStoryComment',
             link: '/mysociety/myhistories',
             id: storyId

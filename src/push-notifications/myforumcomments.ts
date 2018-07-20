@@ -42,7 +42,7 @@ export const sendForumNotification = functions.firestore
 
             const notification = {
               created: new Date(),
-              from: userEmail,
+              from: displayUser,
               decription: 'Nytt svar på ditt innlegg på forum',
               type: 'ForumComment',
               link: '/forum/postcomment/' + forumPostId,

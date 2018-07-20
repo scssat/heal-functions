@@ -258,7 +258,8 @@ function createEvent(id, medicationCabinet, time, email) {
     completed: false,
     measuremendtId: '',
     treatmentId: '',
-    notification: medicationCabinet.notification == 0 ? 2 : medicationCabinet.notification,
+    notification:
+      medicationCabinet.notification == 0 ? 2 : medicationCabinet.notification,
     medicationCabinetId: id,
     contactId: '',
     contactPerson: '',

@@ -14,7 +14,7 @@ export const sendSupportNotification = functions.firestore
       const payload = {
         notification: {
           title: 'Ny post fra familen!',
-          body: `${post.userid} har opprettet ny post til deg`,
+          body: `${post.author} har opprettet ny post til deg`,
           icon: '//https://placeimg.com/200/200/any'
         }
       };
@@ -25,8 +25,8 @@ export const sendSupportNotification = functions.firestore
       const notRef = db.collection(`users/${userEmail}/notifications`);
       const notification = {
         created: new Date(),
-        from: 'post.userid',
-        decription: 'Støtte post',
+        from: 'post.author',
+        decription: 'Ny post fra en i din nære krets ' + post.author,
         type: 'support',
         link: '/mysociety/myfamily',
         id: ''
