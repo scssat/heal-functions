@@ -1,13 +1,12 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
-import { sendStoryNotification } from '../push-notifications/mystoriescomments';
 //admin.initializeApp(functions.config().firebase);
 
 // Create a notification if on the RECEIVER side of the DM
 // Create a new dm user if NO communication has occurred.
 
 export const dmSendMessage = functions.firestore
-  .document('dmmessages/{id}')
+  .document('users/{userid}/dmusers/{dmuserid}/dmmessages/{id}')
   .onCreate((snap, context) => {
     const dmMessage = snap.data();
 
@@ -23,9 +22,11 @@ export const dmSendMessage = functions.firestore
       return null;
     }
 
-    const id = context.params.id;
+    const dmMessageId = context.params.id;
     const fromUserId = dmMessage.fromUserId;
+    const toUserId = dmMessage.fromUserId;
     const userEmail = dmMessage.toUserId;
+    const dmUserId = dmMessage.displayUser;
     const ownerId = dmMessage.toUserId;
     const displayUser = dmMessage.displayUser;
     dmMessage.sent = true;
@@ -45,14 +46,16 @@ export const dmSendMessage = functions.firestore
     };
 
     // Check if this is the first message
-    const dmUserRef = db.collection('dmusers').doc(fromUserId);
+    const dmUserRef = db
+      .collection(`users/${dmUserId}/dmusers`)
+      .doc(dmMessage.sendDisplayUser);
 
     dmUserRef
       .get()
       .then(snapshot => {
         if (snapshot.data()) {
           dmUserRef
-            .collection('dmmessages')
+            .collection(`users/${dmUserId}/dmusers/${toUserId}`)
             .add(sendDM)
             .catch(err => console.log('ERROR - Creating DM Message:', err));
         } else {
@@ -64,14 +67,20 @@ export const dmSendMessage = functions.firestore
             displayUser: dmMessage.sendDisplayUser,
             firstMessage: new Date(),
             lastMessage: new Date(),
-            avatar: dmMessage.sendDisplayUser
+            avatar: dmMessage.sendAvatar
           };
 
-          db.collection('dmusers')
-            .add(newDMUser)
+          db.collection(`users/${dmMessage.fromUserId}/dmusers`)
+            .doc(dmMessage.sendDisplayUser)
+            .set(newDMUser)
             .catch(err => console.log('ERROR - Creating DM USER:', err));
+
           dmUserRef
-            .collection('dmmessages')
+            .collection(
+              `users/${dmMessage.fromUserId}/dmusers/${
+                dmMessage.sendDisplayUser
+              }/dmmessages`
+            )
             .add(sendDM)
             .catch(err => console.log('ERROR - Creating DM Message:', err));
         }
@@ -86,8 +95,8 @@ export const dmSendMessage = functions.firestore
         };
 
         // get users tokens and send notifications
-        const userRef = db.collection('users').doc(userEmail);
-        const notRef = db.collection(`users/${userEmail}/notifications`);
+        const userRef = db.collection('users').doc(toUserId);
+        const notRef = db.collection(`users/${toUserId}/notifications`);
 
         const notification = {
           created: new Date(),
@@ -117,7 +126,11 @@ export const dmSendMessage = functions.firestore
           })
           .catch(err => console.log(err));
         return db
-          .doc(`dmmessages/${id}`)
+          .doc(
+            `users/${fromUserId}/dmusers/${
+              dmMessage.sendDisplayUser
+            }/dmmessages/${dmMessageId}`
+          )
           .update(dmMessage)
           .catch(err => console.log(err));
       })
