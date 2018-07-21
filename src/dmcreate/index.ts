@@ -9,10 +9,18 @@ export const dmSendMessage = functions.firestore
   .document('dmmessages/{id}')
   .onCreate((snap, context) => {
     const dmMessage = snap.data();
+
+    // Return if notification is created or message is sent.
+    if (dmMessage.sent) {
+      return null;
+    }
+
+    const id = context.params.id;
     const fromUserId = dmMessage.fromUserId;
     const userEmail = dmMessage.toUserId;
     const ownerId = dmMessage.toUserId;
     const displayUser = dmMessage.displayUser;
+    dmMessage.sent = true;
     const db = admin.firestore();
 
     const sendDM = {
@@ -20,11 +28,15 @@ export const dmSendMessage = functions.firestore
       id: '',
       fromUserId: dmMessage.fromUserId,
       ownerId: dmMessage.toUserId,
+      sent: true,
       toUserId: dmMessage.toUserId,
       displayUser: dmMessage.sendDisplayUser,
       avatar: dmMessage.sendAvatar,
       createdAt: dmMessage.createdAt
     };
+
+    // Update sender message to SENT
+    db.doc(`dmmessages/${id}`).update(dmMessage);
 
     // Check if user is commenting his own post
     if (dmMessage.fromUserId !== dmMessage.ownerId) {
