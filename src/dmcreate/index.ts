@@ -10,17 +10,18 @@ export const dmSendMessage = functions.firestore
   .onCreate((snap, context) => {
     const dmMessage = snap.data();
 
+    console.log('DM Create start');
     // Return if notification is created or message is sent.
     if (dmMessage.sent) {
       console.log('DM is sent, no change');
       return null;
     }
 
-    // Check if user is commenting his own post
-    if (dmMessage.fromUserId !== dmMessage.ownerId) {
-      console.log('Sender = receiver, no change');
-      return null;
-    }
+    // // Check if user is sending to himself
+    // if (dmMessage.fromUserId !== dmMessage.toUserId) {
+    //   console.log('Sender = receiver, no change');
+    //   return null;
+    // }
 
     const dmMessageId = context.params.id;
     const fromUserId = dmMessage.fromUserId;
@@ -50,7 +51,7 @@ export const dmSendMessage = functions.firestore
       .collection(`users/${dmUserId}/dmusers`)
       .doc(dmMessage.sendDisplayUser);
 
-    dmUserRef
+    return dmUserRef
       .get()
       .then(snapshot => {
         if (snapshot.data()) {
@@ -70,19 +71,26 @@ export const dmSendMessage = functions.firestore
             avatar: dmMessage.sendAvatar
           };
 
-          db.collection(`users/${dmMessage.fromUserId}/dmusers`)
+          db.collection(`users/${dmMessage.toUserId}/dmusers`)
             .doc(dmMessage.sendDisplayUser)
             .set(newDMUser)
             .catch(err => console.log('ERROR - Creating DM USER:', err));
 
-          dmUserRef
-            .collection(
-              `users/${dmMessage.fromUserId}/dmusers/${
-                dmMessage.sendDisplayUser
-              }/dmmessages`
-            )
+          db.collection(
+            `users/${dmMessage.toUserId}/dmusers/${
+              dmMessage.sendDisplayUser
+            }/dmmessages`
+          )
             .add(sendDM)
             .catch(err => console.log('ERROR - Creating DM Message:', err));
+
+          db.doc(
+            `users/${fromUserId}/dmusers/${
+              dmMessage.sendDisplayUser
+            }/dmmessages/${dmMessageId}`
+          )
+            .update(dmMessage)
+            .catch(err => console.log('ERROR - Update DM message', err));
         }
 
         // Message details for end user
@@ -125,15 +133,9 @@ export const dmSendMessage = functions.firestore
             return admin.messaging().sendToDevice(tokens, payload);
           })
           .catch(err => console.log(err));
-        return db
-          .doc(
-            `users/${fromUserId}/dmusers/${
-              dmMessage.sendDisplayUser
-            }/dmmessages/${dmMessageId}`
-          )
-          .update(dmMessage)
-          .catch(err => console.log(err));
+        console.log('DM create execution complete.');
       })
       .catch(err => console.log(err));
+    console.log('DM create execution complete.');
     return null;
   });

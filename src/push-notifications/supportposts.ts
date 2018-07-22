@@ -3,7 +3,7 @@ import * as functions from 'firebase-functions';
 //admin.initializeApp(functions.config().firebase);
 
 export const sendSupportNotification = functions.firestore
-  .document(`users/{userEmail}/familyposts/{myfamId}`)
+  .document('users/{userEmail}/familyposts/{myfamId}')
   .onCreate((snap, context) => {
     const userEmail = context.params.userEmail;
     const post = snap.data();
