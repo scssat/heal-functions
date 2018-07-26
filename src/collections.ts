@@ -19,7 +19,12 @@ export const RECIPE = 'recipe';
 export const RECIPE_CATEGORY = 'recipeCategory';
 export const INGRIDENT = 'ingredient';
 
+// NIU
 export const TASKS = 'tasks';
+
+// DM collections
+export const DM_USERS = 'dmusers';
+export const DM_MESSAGES = 'dmmessages';
 
 export const ENVENT_TYPE_MANUAL = 'Manual';
 export const ENVENT_TYPE_MEDICATION = 'Medication';
@@ -30,8 +35,10 @@ export const ENVENT_MEDICATION_COLOR = 'Red';
 export const ENVENT_TRANSPORTATION_COLOR = 'Orange';
 
 export const MY_TREATMENT = 'myTreatment';
+export const MY_TREATMENT_HISTORY = 'myMedicalHistory';
 export const CONTACTS = 'contacts';
 export const MY_EVENTS = 'myEvents';
+export const MY_NOTIFICATION = 'notifications';
 
 export const MY_NUTRIANT_LIBRARY = 'myNutriantLibrary';
 export const MY_NUTRIDRINK_LIBRARY = 'myNutriantNutriDrink';
@@ -46,9 +53,13 @@ export const MY_FAMILY = 'familyposts';
 export const MY_STORIES = 'mystories';
 export const MY_COMMENTS = 'comments';
 
+export const MBH_FORUM = 'forumposts';
+export const MBH_FORUM_COMMENTS = 'forumcomments';
+
 export const HEALTH_PROFILE = 'healthProfile';
 
 //My Medication
+export const CHAT_ROOM_LIST = 'chatrooms';
 export const MY_MEDICATION_LIBRARY = 'myMedicationLibrary';
 export const MY_MEDICATION_CABINET = 'myMedicationCabinet';
 export const MY_MEDICATION_HISTORY = 'myMedicationHistory';
@@ -63,6 +74,14 @@ export const MY_DOCUMENTS = 'documents';
 export const MY_INCOMMING_MESSAGES = 'mymessages';
 export const MY_DIAGNOSE = 'diagnose';
 
+// System storage paths
+export const PROFILE_PICTS = 'profilepicts';
+
+// User storage paths
+export const PROFILE_PATH = 'profilepicts';
+export const IMAGES_PATH = 'myimages';
+export const DOCUMENTS_PATH = 'mydocuments';
+
 export const USERTYPE_DEFAULT = 'Regulær';
 export const USERTYPE_REGULAR = 'Regulær';
 export const USERTYPE_ADMIN = 'Admin';
@@ -76,6 +95,12 @@ export const MY_IMAGE_DIRECTORY = 'assets/photos/';
 export const MY_DOCUMENT_DIRECTORY = 'assets/documents/';
 export const MY_PROFILE_IMAGE_DIRECTORY = 'assets/images/';
 
+export const TOASTR_SUCCESS = 'success';
+export const TOASTR_INFO = 'info';
+export const TOASTR_ERROR = 'error';
+export const TOASTR_WARNING = 'warning';
+export const TOASTR_INFO_CLICK = 'infoClick';
+
 export const weekDays = [
   'Søndag',
   'Mandag',
@@ -85,3 +110,21 @@ export const weekDays = [
   'Fredag',
   'Lørdag'
 ];
+
+export const enum NotificationTypes {
+  FamilyPost = 'support',
+  MyStoryComment = 'MyStoryComment',
+  DirectMessage = 'DirectMessage',
+  Forum = 'Forum',
+  InternalEmail = 'InternalEmail',
+  Calendar = 'Calendar'
+}
+
+export const enum NotificationTypesNo {
+  FamilyPost = 'Støttepost',
+  MyStoryComment = 'Kommentar til historie',
+  DirectMessage = 'Melding fra bruker',
+  Forum = 'Forum',
+  InternalEmail = 'Intern email',
+  Calendar = 'Kalender'
+}
