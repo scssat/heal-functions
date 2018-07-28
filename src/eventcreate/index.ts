@@ -7,6 +7,8 @@ admin.initializeApp();
 
 export const createEvents = functions.https.onRequest(async (req, res) => {
   const docRef = admin.firestore().collection(shared.USERS);
+  // const settings = { timestampsInSnapshots: true };
+  //admin.firestore().settings(settings);
 
   docRef
     .where('active', '==', true)
@@ -14,97 +16,101 @@ export const createEvents = functions.https.onRequest(async (req, res) => {
     .get()
     .then(querySnapshot => {
       const users = [];
-      const medications = [];
-      const measurements = [];
       querySnapshot.forEach(doc => {
         users.push(doc.data());
       });
 
       //res.send(users);
       users.forEach(user => {
-        const docRefMedication = admin
-          .firestore()
-          .collection(
-            `${shared.USERS}/${user.email}/${shared.MY_MEDICATION_CABINET}`
-          );
-
+        analyzeAll(user.email, res).catch(err => {
+          console.log(`Error when analyzing users! - ${err}`);
+          res.end();
+        });
         //console.log(shared.USERS, user.email, shared.MY_MEDICATION_CABINET);
-
-        const docRefMeasurement = admin
-          .firestore()
-          .collection(`${shared.USERS}/${user.email}/${shared.MY_MEASUREMENT}`);
-
-        // Create medication events in calendar
-        docRefMedication
-          .where('active', '==', true)
-          .orderBy('medicationName', 'asc')
-          .get()
-          .then(querySnapshot1 => {
-            querySnapshot1.forEach(doc => {
-              const data = doc.data();
-              if (data.frequencyValue > 0) {
-                const md = { id: doc.id, data: doc.data() };
-                medications.push(md);
-              }
-            });
-
-            medications.forEach(medication => {
-              createMedicationEvents(
-                medication.id,
-                medication.data,
-                user.email
-              );
-            });
-            console.log(
-              `Number of medications (user:${user.email}) analyzed for events:${
-                medications.length
-              }`
-            );
-          })
-          .catch(err => {
-            console.log(`Error when reading medications! - ${err}`);
-            res.status(500).send(err);
-          });
-
-        // Create meaurement events in calendar
-        docRefMeasurement
-          .where('copyToCalendar', '==', true)
-          .orderBy('name', 'asc')
-          .get()
-          .then(querySnapshot2 => {
-            querySnapshot2.forEach(doc => {
-              const tr = { id: doc.id, data: doc.data() };
-              measurements.push(tr);
-            });
-
-            measurements.forEach(measurement => {
-              createMeasurementWrapper(
-                measurement.id,
-                measurement.data,
-                user.email
-              );
-            });
-            console.log(
-              `Number of measurments (user:${user.email}) analyzed for events:${
-                measurements.length
-              }`
-            );
-          })
-          .catch(err => {
-            console.log(`Error when reading measurements! - ${err}`);
-            res.status(500).send(err);
-          });
-        console.log(`Number users analyzed:${users.length}`);
-        res.send(
-          'Create calendar event trigger: execution successfully completed!'
-        );
       });
+      console.log(`Number users analyzed:${users.length}`);
+      return null;
     })
     .catch(err => {
       console.log(`Error when reading users! - ${err}`);
       res.end();
     });
 });
+
+async function analyzeAll(email, res) {
+  const all = await Promise.all([
+    analyzeMedication(email, res),
+    analyzeMesurement(email, res)
+  ]).catch(err => console.log(`Error when analyzing user: ${email}! - ${err}`));
+}
+
+async function analyzeMedication(email, res) {
+  const medications = [];
+  const docRefMedication = admin
+    .firestore()
+    .collection(`${shared.USERS}/${email}/${shared.MY_MEDICATION_CABINET}`);
+
+  // Create medication events in calendar
+  docRefMedication
+    .where('active', '==', true)
+    .orderBy('medicationName', 'asc')
+    .get()
+    .then(querySnapshot1 => {
+      querySnapshot1.forEach(doc => {
+        const data = doc.data();
+        if (data.frequencyValue > 0) {
+          const md = { id: doc.id, data: doc.data() };
+          medications.push(md);
+        }
+      });
+
+      medications.forEach(medication => {
+        createMedicationEvents(medication.id, medication.data, email);
+      });
+      console.log(
+        `Number of medications (user:${email}) analyzed for events:${
+          medications.length
+        }`
+      );
+    })
+    .catch(err => {
+      console.log(`Error when reading medications! - ${err}`);
+      res.status(500).send(err);
+    });
+}
+
+async function analyzeMesurement(email, res) {
+  const docRefMeasurement = admin
+    .firestore()
+    .collection(`${shared.USERS}/${email}/${shared.MY_MEASUREMENT}`);
+  const measurements = [];
+
+  // Create measurement events in calendar
+  docRefMeasurement
+    .where('copyToCalendar', '==', true)
+    .orderBy('name', 'asc')
+    .get()
+    .then(querySnapshot2 => {
+      querySnapshot2.forEach(doc => {
+        const tr = { id: doc.id, data: doc.data() };
+        measurements.push(tr);
+      });
+
+      measurements.forEach(measurement => {
+        createMeasurementWrapper(measurement.id, measurement.data, email);
+      });
+      console.log(
+        `Number of measurments (user:${email}) analyzed for events:${
+          measurements.length
+        }`
+      );
+    })
+    .catch(err => {
+      console.log(`Error when reading measurements! - ${err}`);
+      res.status(500).send(err);
+    });
+  res.send('Create calendar event trigger: execution successfully completed!');
+}
 
 function createMedicationEvents(id, medicationCabinet, email) {
   moment.locale('nb');
@@ -405,6 +411,6 @@ function updateMyMeasurement(id, myMeasurement, email) {
     .collection(`${shared.USERS}/${email}/${shared.MY_MEASUREMENT}`)
     .doc(id);
   docRef.update(myMeasurement).catch(err => {
-    console.log(`Error when adding calendar event! - ${err}`);
+    console.log(`Error when updating measurement calendar event! - ${err}`);
   });
 }

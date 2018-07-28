@@ -9,7 +9,8 @@ export const dmSendMessage = functions.firestore
 
     console.log('INIT new user start');
 
-    copyAll(email);
+    copyAll(email).catch(err => console.log('Error copying user data!', err));
+
     console.log('INIT NEW user execution complete.');
     return null;
   });
@@ -66,7 +67,7 @@ function createVideolinks(email: string): Promise<any> {
     .get()
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
-        let newLink = this.setEmptyVideoLink();
+        const newLink = setEmptyVideoLink();
         const link = doc.data();
         newLink.id = '';
         newLink.name = link.name;
@@ -97,7 +98,7 @@ function createLinks(email: string): Promise<any> {
     .get()
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
-        let newLink = this.setEmptyLink();
+        const newLink = setEmptyLink();
         const link = doc.data();
         newLink.id = '';
         newLink.name = link.name;
@@ -127,7 +128,7 @@ function createMedication(email: string): Promise<any> {
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
         const medicationLibrary = doc.data();
-        let myMedicationLibrary = {
+        const myMedicationLibrary = {
           id: '',
           medicationLibId: medicationLibrary.id,
           custom: false,
@@ -158,22 +159,22 @@ function createMeasurements(email: string): Promise<any> {
     .get()
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
-        const measurementLibrary = doc.data();
-        let myMeasurement = {
+        const measurementLibraryCopy = doc.data();
+        const myMeasurement = {
           id: '',
-          name: measurementLibrary.name,
-          allowDelete: measurementLibrary.allowDelete,
+          name: measurementLibraryCopy.name,
+          allowDelete: measurementLibraryCopy.allowDelete,
           custom: false,
-          units: measurementLibrary.units,
+          units: measurementLibraryCopy.units,
           cancerTypes: '',
-          keySearch: measurementLibrary.keySearch,
-          gender: measurementLibrary.gender,
-          measurementURL: measurementLibrary.measurementURL,
-          graphURL: measurementLibrary.graphURL,
+          keySearch: measurementLibraryCopy.keySearch,
+          gender: measurementLibraryCopy.gender,
+          measurementURL: measurementLibraryCopy.measurementURL,
+          graphURL: measurementLibraryCopy.graphURL,
           description: '',
           copyToCalendar: false,
           lastCalendarUpdate: null,
-          general: measurementLibrary.general,
+          general: measurementLibraryCopy.general,
           selected: false,
           firstMeasurement: null,
           numberOfMeasures: 0
@@ -199,7 +200,7 @@ function createNutriant(email: string): Promise<any> {
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
         const nutritionLibrary = doc.data();
-        let myNutritionLibrary = {
+        const myNutritionLibrary = {
           id: '',
           type: nutritionLibrary.type,
           name: nutritionLibrary.name,
@@ -211,19 +212,19 @@ function createNutriant(email: string): Promise<any> {
           dosagePerDay: nutritionLibrary.dosagePerDay,
           content: nutritionLibrary.content,
           manufactor:
-            nutritionLibrary.manufactor == undefined
+            nutritionLibrary.manufactor === undefined
               ? ''
               : nutritionLibrary.manufactor,
           manufactorURL:
-            nutritionLibrary.manufactorURL == undefined
+            nutritionLibrary.manufactorURL === undefined
               ? ''
               : nutritionLibrary.manufactorURL,
           contentURL:
-            nutritionLibrary.contentURL == undefined
+            nutritionLibrary.contentURL === undefined
               ? ''
               : nutritionLibrary.contentURL,
-          karb: nutritionLibrary.karb == undefined ? 0 : nutritionLibrary.karb,
-          salt: nutritionLibrary.salt == undefined ? 0 : nutritionLibrary.salt
+          karb: nutritionLibrary.karb === undefined ? 0 : nutritionLibrary.karb,
+          salt: nutritionLibrary.salt === undefined ? 0 : nutritionLibrary.salt
         };
 
         userNutriantLibrary.add(myNutritionLibrary);
@@ -248,7 +249,7 @@ function createNutridrink(email: string): Promise<any> {
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
         const nutridrink = doc.data();
-        let myNutridrink = {
+        const myNutridrink = {
           id: '',
           type: nutridrink.type,
           name: nutridrink.name,
@@ -261,15 +262,15 @@ function createNutridrink(email: string): Promise<any> {
           nutritionUnit: nutridrink.nutritionUnit,
           contentPerUnit: nutridrink.contentPerUnit,
           manufactor:
-            nutridrink.manufactor == undefined ? '' : nutridrink.manufactor,
+            nutridrink.manufactor === undefined ? '' : nutridrink.manufactor,
           manufactorURL:
-            nutridrink.manufactorURL == undefined
+            nutridrink.manufactorURL === undefined
               ? ''
               : nutridrink.manufactorURL,
           contentURL:
-            nutridrink.contentURL == undefined ? '' : nutridrink.contentURL,
-          karb: nutridrink.karb == undefined ? 0 : nutridrink.karb,
-          salt: nutridrink.salt == undefined ? 0 : nutridrink.salt
+            nutridrink.contentURL === undefined ? '' : nutridrink.contentURL,
+          karb: nutridrink.karb === undefined ? 0 : nutridrink.karb,
+          salt: nutridrink.salt === undefined ? 0 : nutridrink.salt
         };
         userNutridrinkLibrary.add(myNutridrink);
       });
@@ -298,25 +299,25 @@ function createRecipes(email: string): Promise<any> {
           name: recipe.name,
           category: recipe.category,
           description:
-            recipe.description == undefined ? '' : recipe.description,
+            recipe.description === undefined ? '' : recipe.description,
           deleteAllowed: recipe.deleteAllowed,
           portionOf: recipe.portionOf,
           KCALPerPotion:
-            recipe.KCALPerPotion == undefined ? 0 : recipe.KCALPerPotion,
+            recipe.KCALPerPotion === undefined ? 0 : recipe.KCALPerPotion,
           proteinPerPotion:
-            recipe.proteinPerPotion == undefined ? 0 : recipe.proteinPerPotion,
+            recipe.proteinPerPotion === undefined ? 0 : recipe.proteinPerPotion,
           fiberPerPotion:
-            recipe.fiberPerPotion == undefined ? 0 : recipe.fiberPerPotion,
+            recipe.fiberPerPotion === undefined ? 0 : recipe.fiberPerPotion,
           fatPerPotion:
-            recipe.fatPerPotion == undefined ? 0 : recipe.fatPerPotion,
+            recipe.fatPerPotion === undefined ? 0 : recipe.fatPerPotion,
           karbPerPotion:
-            recipe.karbPerPotion == undefined ? 0 : recipe.karbPerPotion,
+            recipe.karbPerPotion === undefined ? 0 : recipe.karbPerPotion,
           picturePath:
-            recipe.picturePath == undefined ? '' : recipe.picturePath,
+            recipe.picturePath === undefined ? '' : recipe.picturePath,
           timeToPrepare: recipe.timeToPrepare,
-          difficulty: recipe.difficulty == undefined ? 0 : recipe.difficulty,
+          difficulty: recipe.difficulty === undefined ? 0 : recipe.difficulty,
           numberOfIngredients:
-            recipe.numberOfIngredients == undefined
+            recipe.numberOfIngredients === undefined
               ? 0
               : recipe.numberOfIngredients
         };
@@ -348,16 +349,16 @@ function createIngredient(newId, mainId: string): Promise<any> {
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
         const ingredient = doc.data();
-        let myIngredient = {
+        const myIngredient = {
           id: '',
           type: ingredient.type,
           mainId: newId,
           name: ingredient.name,
           amount: ingredient.amount,
           manufactor:
-            ingredient.manufactor == undefined ? '' : ingredient.manufactor,
+            ingredient.manufactor === undefined ? '' : ingredient.manufactor,
           manufactorURL:
-            ingredient.manufactorURL == undefined
+            ingredient.manufactorURL === undefined
               ? ''
               : ingredient.manufactorURL,
           KCAL: ingredient.KCAL,
@@ -366,10 +367,10 @@ function createIngredient(newId, mainId: string): Promise<any> {
           fat: ingredient.fat,
           dosagePerDay: ingredient.dosagePerDay,
           content: ingredient.content,
-          karb: ingredient.karb == undefined ? 0 : ingredient.karb,
-          salt: ingredient.salt == undefined ? 0 : ingredient.salt,
+          karb: ingredient.karb === undefined ? 0 : ingredient.karb,
+          salt: ingredient.salt === undefined ? 0 : ingredient.salt,
           contentURL:
-            ingredient.contentURL == undefined ? '' : ingredient.contentURL
+            ingredient.contentURL === undefined ? '' : ingredient.contentURL
         };
 
         ingredientLibraryCollection.add(myIngredient);
