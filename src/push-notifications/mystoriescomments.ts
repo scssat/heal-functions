@@ -6,7 +6,6 @@ export const sendStoryNotification = functions.firestore
   .document('mystories/{storyId}/comments/{commentId}')
   .onCreate((snap, context) => {
     const comment = snap.data();
-    //const userEmail = comment.userid;
     const displayUser = comment.author;
     const storyId = context.params.storyId;
 
@@ -57,6 +56,11 @@ export const sendStoryNotification = functions.firestore
               if (!tokens.length) {
                 throw new Error('User does not have any tokens!');
               }
+
+              user.numberOfNotifications = 1;
+              userRef
+                .update(user)
+                .catch(err => console.log('Error when updating user', err));
 
               console.log('Notification sendt to user:', notificationEmail);
               return admin.messaging().sendToDevice(tokens, payload);

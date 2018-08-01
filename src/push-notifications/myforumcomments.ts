@@ -64,6 +64,11 @@ export const sendForumNotification = functions.firestore
                   throw new Error('User does not have any tokens!');
                 }
 
+                user.numberOfNotifications = 1;
+                userRef
+                  .update(user)
+                  .catch(err => console.log('Error when updating user', err));
+
                 console.log('Notification sendt to user:', notificationEmail);
                 return admin.messaging().sendToDevice(tokens, payload);
               })
