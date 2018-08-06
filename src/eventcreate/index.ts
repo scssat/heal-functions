@@ -38,7 +38,7 @@ export const createEvents = functions.https.onRequest(async (req, res) => {
 });
 
 async function analyzeAll(email, res) {
-  const all = await Promise.all([
+  await Promise.all([
     analyzeMedication(email, res),
     analyzeMesurement(email, res)
   ]).catch(err => console.log(`Error when analyzing user: ${email}! - ${err}`));

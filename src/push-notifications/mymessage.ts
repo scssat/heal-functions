@@ -1,7 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import * as mbhCollection from '../collections';
-//admin.initializeApp(functions.config().firebase);
 
 export const sendinternalMessageNotification = functions.firestore
   .document(`users/{userId}/${mbhCollection.MY_INCOMMING_MESSAGES}/{messageId}`)
