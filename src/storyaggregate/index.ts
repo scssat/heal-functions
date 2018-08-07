@@ -2,10 +2,15 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 import * as mbhCollection from '../collections';
 
-export const aggregateComments = functions.firestore
-  .document(`${mbhCollection.MBH_FORUM_COMMENTS}/{commentId}`)
+export const aggregateStoryComments = functions.firestore
+  .document(
+    `${mbhCollection.MY_STORIES}/{storyId}/${
+      mbhCollection.MY_COMMENTS
+    }/{commentId}`
+  )
   .onWrite((change, context) => {
     const comment = change.after.data();
+    const storyId = context.params.storyId;
 
     if (!change.after.exists) {
       // Document has been deleted
@@ -15,16 +20,17 @@ export const aggregateComments = functions.firestore
     // ref to the parent document
     const postRef = admin
       .firestore()
-      .collection('forumposts')
-      .doc(comment.forumPostId);
+      .collection(mbhCollection.MY_STORIES)
+      .doc(storyId);
 
     const commentRef = admin
       .firestore()
-      .collection(`${mbhCollection.MBH_FORUM_COMMENTS}`);
+      .collection(
+        `${mbhCollection.MY_STORIES}/${storyId}/${mbhCollection.MY_COMMENTS}`
+      );
 
     // get all comments and aggregate
     commentRef
-      .where('forumPostId', '==', comment.forumPostId)
       .orderBy('created', 'desc')
       .get()
       .then(querySnapshot => {
@@ -49,8 +55,8 @@ export const aggregateComments = functions.firestore
         // run update
         return postRef
           .update(data)
-          .catch(err => console.log('Error when writing to post', err));
+          .catch(err => console.log('Error when writing to story', err));
       })
-      .catch(err => console.log('Error when reading comments', err));
+      .catch(err => console.log('Error when reading storycomments', err));
     return null;
   });

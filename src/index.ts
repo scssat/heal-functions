@@ -2,8 +2,10 @@ import * as eventcreate from './eventcreate';
 import * as pushnotif from './push-notifications';
 import * as dmmessage from './dmcreate';
 import * as aggregateComment from './forumaggregate';
+import * as aggregateStoryComments from './storyaggregate';
 
 export const forumAggregate = aggregateComment.aggregateComments;
+export const storyAggregate = aggregateStoryComments.aggregateStoryComments;
 export const dmSendMessage = dmmessage.dmSendMessage;
 export const createEvents = eventcreate.createEvents;
 export const pushSupport = pushnotif.sendSupportNotification;
