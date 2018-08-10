@@ -1,13 +1,13 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
-//admin.initializeApp(functions.config().firebase);
+const db = admin.firestore();
 
 // Create a notification if on the RECEIVER side of the DM
 // Create a new dm user if NO communication has occurred.
 
 export const dmSendMessage = functions.firestore
   .document('users/{userid}/dmusers/{dmuserid}/dmmessages/{id}')
-  .onCreate((snap, context) => {
+  .onCreate(async (snap, context) => {
     const dmMessage = snap.data();
 
     console.log('DM Create start');
@@ -17,12 +17,6 @@ export const dmSendMessage = functions.firestore
       return null;
     }
 
-    // // Check if user is sending to himself
-    // if (dmMessage.fromUserId !== dmMessage.toUserId) {
-    //   console.log('Sender = receiver, no change');
-    //   return null;
-    // }
-
     const dmMessageId = context.params.id;
     const fromUserId = dmMessage.fromUserId;
     const toUserId = dmMessage.fromUserId;
@@ -31,7 +25,14 @@ export const dmSendMessage = functions.firestore
     const ownerId = dmMessage.toUserId;
     const displayUser = dmMessage.displayUser;
     dmMessage.sent = true;
-    const db = admin.firestore();
+
+    // Check if user is sending to himself
+    if (dmMessage.fromUserId === dmMessage.toUserId) {
+      console.log('Sender = receiver, no change');
+      return null;
+    }
+
+    // Check if user is sending to himself
 
     // Create the SENT DM
     const sendDM = {
@@ -50,13 +51,21 @@ export const dmSendMessage = functions.firestore
     const dmUserRef = db
       .collection(`users/${dmUserId}/dmusers`)
       .doc(dmMessage.sendDisplayUser);
+    const messageRef = dmUserRef.collection(
+      `users/${dmUserId}/dmusers/${toUserId}`
+    );
+
+    const sendMessageRef = db.doc(
+      `users/${sendDM.fromUserId}/dmusers/${
+        dmMessage.sendDisplayUser
+      }/dmmessages/${dmMessageId}`
+    );
 
     return dmUserRef
       .get()
       .then(snapshot => {
         if (snapshot.data()) {
-          dmUserRef
-            .collection(`users/${dmUserId}/dmusers/${toUserId}`)
+          messageRef
             .add(sendDM)
             .catch(err => console.log('ERROR - Creating DM Message:', err));
         } else {
@@ -70,28 +79,12 @@ export const dmSendMessage = functions.firestore
             lastMessage: new Date(),
             avatar: dmMessage.sendAvatar
           };
-
-          db.collection(`users/${dmMessage.toUserId}/dmusers`)
-            .doc(dmMessage.sendDisplayUser)
-            .set(newDMUser)
-            .catch(err => console.log('ERROR - Creating DM USER:', err));
-
-          db.collection(
-            `users/${dmMessage.toUserId}/dmusers/${
-              dmMessage.sendDisplayUser
-            }/dmmessages`
-          )
-            .add(sendDM)
-            .catch(err => console.log('ERROR - Creating DM Message:', err));
-
-          db.doc(
-            `users/${fromUserId}/dmusers/${
-              dmMessage.sendDisplayUser
-            }/dmmessages/${dmMessageId}`
-          )
-            .update(dmMessage)
-            .catch(err => console.log('ERROR - Update DM message', err));
+          createDMUser(newDMUser, sendDM, messageRef);
         }
+
+        sendMessageRef
+          .update(dmMessage)
+          .catch(err => console.log('ERROR - Update DM message', err));
 
         // Message details for end user
         const payload = {
@@ -139,3 +132,15 @@ export const dmSendMessage = functions.firestore
     console.log('DM create execution complete.');
     return null;
   });
+
+async function createDMUser(newDMUser, sendDM, messageRef) {
+  await db
+    .collection(`users/${newDMUser.toUserId}/dmusers`)
+    .doc(newDMUser.sendDisplayUser)
+    .set(newDMUser)
+    .catch(err => console.log('ERROR - Creating DM USER:', err));
+
+  await messageRef
+    .add(sendDM)
+    .catch(err => console.log('ERROR - Creating DM Message:', err));
+}

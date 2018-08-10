@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
-//admin.initializeApp(functions.config().firebase);
+const db = admin.firestore();
 
 export const sendStoryNotification = functions.firestore
   .document('mystories/{storyId}/comments/{commentId}')
@@ -18,9 +18,6 @@ export const sendStoryNotification = functions.firestore
           icon: '//https://placeimg.com/200/200/any'
         }
       };
-
-      // ref to the parent document
-      const db = admin.firestore();
 
       const storyRef = db.collection('mystories').doc(storyId);
       // get users tokens and send notifications

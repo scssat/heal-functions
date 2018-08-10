@@ -1,7 +1,7 @@
 export const USERS = 'users';
 export const USER_TYPES = 'userTypes';
 export const USER_LINKS = 'userLinks';
-export const FORUM_GROUPS = 'forumGroups';
+export const FORUM_GROUPS = 'forumGroups'; // Not in use
 export const CANCER_TYPES = 'cancerTypes';
 export const MEDICATION_LIBRARY = 'medicationLibrary';
 export const NUTRIANT_LIBRARY = 'nutriantLibrary';
@@ -11,13 +11,14 @@ export const NUTRIANT_TYPE = 'nutriantType';
 export const LINK_LIBRARY = 'linkLibrary';
 export const MEASUREMENT_LIBRARY = 'measurementLibrary';
 export const VIDEO_LINK_LIBRARY = 'videoLinkLibrary';
-export const HASH_TAG_LIBRARY = 'hashTagLibrary';
 export const DIARY_TYPE_LIBRARY = 'diaryTypes';
 export const SEND_MESSAGE = 'sendmessage';
 export const RESPONSE_MESSAGE = 'responsemessage';
 export const RECIPE = 'recipe';
 export const RECIPE_CATEGORY = 'recipeCategory';
 export const INGRIDENT = 'ingredient';
+
+export const HASH_TAG_LIBRARY = 'hashTagLibrary';
 
 // NIU
 export const TASKS = 'tasks';
@@ -50,16 +51,28 @@ export const MY_MAIN_DAILY_CONSUMPTION = 'myMainDailyConsumption';
 export const MY_MEASUREMENT = 'measurements';
 export const MY_MEASURE = 'measures';
 export const MY_FAMILY = 'familyposts';
-export const MY_STORIES = 'mystories';
-export const MY_COMMENTS = 'comments';
 
+// Story collections
+export const MY_STORIES = 'mystories';
+export const STORY_HEARTS = 'storyHeart';
+export const MY_COMMENTS = 'comments';
+export const FOLLOWER_STORY = 'storyFollower';
+
+//Forum collections
 export const MBH_FORUM = 'forumposts';
+export const FORUM_HEARTS = 'forumHeart';
 export const MBH_FORUM_COMMENTS = 'forumcomments';
+export const FOLLOWER_FORUM = 'forumFollower';
+export const FORUM_HASHTAG = 'forumHashtag';
 
 export const HEALTH_PROFILE = 'healthProfile';
 
-//My Medication
+// Chat
 export const CHAT_ROOM_LIST = 'chatrooms';
+export const CHAT_USER = 'chatuser';
+export const CHAT_MESSAGE = 'message';
+
+//My Medication
 export const MY_MEDICATION_LIBRARY = 'myMedicationLibrary';
 export const MY_MEDICATION_CABINET = 'myMedicationCabinet';
 export const MY_MEDICATION_HISTORY = 'myMedicationHistory';

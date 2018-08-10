@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
-//admin.initializeApp(functions.config().firebase);
+const db = admin.firestore();
 
 export const sendSupportNotification = functions.firestore
   .document('users/{userEmail}/familyposts/{myfamId}')
@@ -19,8 +19,6 @@ export const sendSupportNotification = functions.firestore
         }
       };
 
-      // ref to the parent document
-      const db = admin.firestore();
       const userRef = db.collection('users').doc(userEmail);
       const notRef = db.collection(`users/${userEmail}/notifications`);
       const notification = {

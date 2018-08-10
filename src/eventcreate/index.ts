@@ -4,9 +4,10 @@ import * as moment from 'moment';
 import * as shared from '../collections';
 import { CalendarEvent } from '../models/event.model';
 admin.initializeApp();
+const db = admin.firestore();
 
 export const createEvents = functions.https.onRequest(async (req, res) => {
-  const docRef = admin.firestore().collection(shared.USERS);
+  const docRef = db.collection(shared.USERS);
   // const settings = { timestampsInSnapshots: true };
   //admin.firestore().settings(settings);
 
@@ -46,9 +47,9 @@ async function analyzeAll(email, res) {
 
 async function analyzeMedication(email, res) {
   const medications = [];
-  const docRefMedication = admin
-    .firestore()
-    .collection(`${shared.USERS}/${email}/${shared.MY_MEDICATION_CABINET}`);
+  const docRefMedication = db.collection(
+    `${shared.USERS}/${email}/${shared.MY_MEDICATION_CABINET}`
+  );
 
   // Create medication events in calendar
   docRefMedication
@@ -80,9 +81,9 @@ async function analyzeMedication(email, res) {
 }
 
 async function analyzeMesurement(email, res) {
-  const docRefMeasurement = admin
-    .firestore()
-    .collection(`${shared.USERS}/${email}/${shared.MY_MEASUREMENT}`);
+  const docRefMeasurement = db.collection(
+    `${shared.USERS}/${email}/${shared.MY_MEASUREMENT}`
+  );
   const measurements = [];
 
   // Create measurement events in calendar
@@ -359,8 +360,7 @@ function createMeasurementEvent(id, myMeasurement, time, email) {
 }
 
 function updateMedicationCabinet(id, medicationCabinet, email) {
-  const docRef = admin
-    .firestore()
+  const docRef = db
     .collection(`${shared.USERS}/${email}/${shared.MY_MEDICATION_CABINET}`)
     .doc(id);
   docRef.update(medicationCabinet).catch(err => {
@@ -386,9 +386,7 @@ function createComplianceRecord(id, medicationCabinet, email) {
     actualIntakeToday: 0
   };
 
-  admin
-    .firestore()
-    .collection(`${shared.USERS}/${email}/${shared.MY_MEDICATION_COMPLIANCE}`)
+  db.collection(`${shared.USERS}/${email}/${shared.MY_MEDICATION_COMPLIANCE}`)
     .add(medicationCompliance)
     .catch(err => {
       console.log(`Error when adding medication compliance! - ${err}`);
@@ -396,9 +394,7 @@ function createComplianceRecord(id, medicationCabinet, email) {
 }
 
 function newCalendarEvent(calendarEvent, email) {
-  admin
-    .firestore()
-    .collection(`${shared.USERS}/${email}/${shared.MY_EVENTS}`)
+  db.collection(`${shared.USERS}/${email}/${shared.MY_EVENTS}`)
     .add(calendarEvent)
     .catch(err => {
       console.log(`Error when adding calendar event! - ${err}`);
@@ -406,8 +402,7 @@ function newCalendarEvent(calendarEvent, email) {
 }
 
 function updateMyMeasurement(id, myMeasurement, email) {
-  const docRef = admin
-    .firestore()
+  const docRef = db
     .collection(`${shared.USERS}/${email}/${shared.MY_MEASUREMENT}`)
     .doc(id);
   docRef.update(myMeasurement).catch(err => {

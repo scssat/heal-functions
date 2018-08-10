@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 import * as mbhCollection from '../collections';
+const db = admin.firestore();
 
 export const aggregateStoryComments = functions.firestore
   .document(
@@ -18,16 +19,11 @@ export const aggregateStoryComments = functions.firestore
     }
 
     // ref to the parent document
-    const postRef = admin
-      .firestore()
-      .collection(mbhCollection.MY_STORIES)
-      .doc(storyId);
+    const postRef = db.collection(mbhCollection.MY_STORIES).doc(storyId);
 
-    const commentRef = admin
-      .firestore()
-      .collection(
-        `${mbhCollection.MY_STORIES}/${storyId}/${mbhCollection.MY_COMMENTS}`
-      );
+    const commentRef = db.collection(
+      `${mbhCollection.MY_STORIES}/${storyId}/${mbhCollection.MY_COMMENTS}`
+    );
 
     // get all comments and aggregate
     commentRef
@@ -51,7 +47,6 @@ export const aggregateStoryComments = functions.firestore
 
         // data to update on the document
         const data = { numberOfComments, recentComments, lastUpdate };
-        console.log('Number of comments:', numberOfComments);
         // run update
         return postRef
           .update(data)

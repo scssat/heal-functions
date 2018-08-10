@@ -1,6 +1,7 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import * as mbhCollection from '../collections';
+const db = admin.firestore();
 
 export const dmSendMessage = functions.firestore
   .document('users/{userId}')
@@ -55,7 +56,6 @@ function setEmptyLink() {
 
 function createVideolinks(email: string): Promise<any> {
   // Video links
-  const db = admin.firestore();
   const videoLibrary = db
     .collection(mbhCollection.VIDEO_LINK_LIBRARY)
     .orderBy('name', 'asc');
@@ -86,7 +86,6 @@ function createVideolinks(email: string): Promise<any> {
 
 function createLinks(email: string): Promise<any> {
   //General links
-  const db = admin.firestore();
   const linkLibrary = db
     .collection(mbhCollection.LINK_LIBRARY)
     .orderBy('name', 'asc');
@@ -115,7 +114,6 @@ function createLinks(email: string): Promise<any> {
 
 function createMedication(email: string): Promise<any> {
   // Copy MEDICATION from library
-  const db = admin.firestore();
   const medcationLibrary = db
     .collection(mbhCollection.MEDICATION_LIBRARY)
     .orderBy('medicationName', 'asc');
@@ -147,7 +145,6 @@ function createMedication(email: string): Promise<any> {
 
 function createMeasurements(email: string): Promise<any> {
   // Copy MEASUREMENTS from library
-  const db = admin.firestore();
   const measurementLibrary = db
     .collection(mbhCollection.MEASUREMENT_LIBRARY)
     .orderBy('medicationName', 'asc');
@@ -187,7 +184,6 @@ function createMeasurements(email: string): Promise<any> {
 
 function createNutriant(email: string): Promise<any> {
   // Copy nutrition library
-  const db = admin.firestore();
   const nutriantLibrary = db
     .collection(mbhCollection.NUTRIANT_LIBRARY)
     .orderBy('name', 'asc');
@@ -234,8 +230,6 @@ function createNutriant(email: string): Promise<any> {
 }
 
 function createNutridrink(email: string): Promise<any> {
-  const db = admin.firestore();
-
   // Copy nutridrink library
   const nutridrinkLibrary = db
     .collection(mbhCollection.NUTRIANT_SUPPLEMENT)
@@ -279,8 +273,6 @@ function createNutridrink(email: string): Promise<any> {
 }
 
 function createRecipes(email: string): Promise<any> {
-  const db = admin.firestore();
-
   // Copy recipe library
   const recipeLibrary = db
     .collection(mbhCollection.RECIPE)
@@ -337,8 +329,6 @@ function createRecipes(email: string): Promise<any> {
 }
 
 function createIngredient(newId, mainId: string): Promise<any> {
-  const db = admin.firestore();
-
   const ingredientLibraryCollection = db
     .collection(mbhCollection.RECIPE)
     .doc(mainId)

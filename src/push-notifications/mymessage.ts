@@ -1,6 +1,7 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import * as mbhCollection from '../collections';
+const db = admin.firestore();
 
 export const sendinternalMessageNotification = functions.firestore
   .document(`users/{userId}/${mbhCollection.MY_INCOMMING_MESSAGES}/{messageId}`)
@@ -17,9 +18,6 @@ export const sendinternalMessageNotification = functions.firestore
         icon: '//https://placeimg.com/200/200/any'
       }
     };
-
-    // ref to the parent document
-    const db = admin.firestore();
 
     const notRef = db.collection(`users/${email}/notifications`);
     // get users tokens and send notifications

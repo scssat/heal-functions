@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import * as mbhCollection from '../collections';
-//admin.initializeApp(functions.config().firebase);
+const db = admin.firestore();
 
 export const sendDMmessageNotification = functions.firestore
   .document(
@@ -24,7 +24,6 @@ export const sendDMmessageNotification = functions.firestore
     };
 
     // ref to the parent document
-    const db = admin.firestore();
 
     const notRef = db.collection(`users/${email}/notifications`);
     // get users tokens and send notifications

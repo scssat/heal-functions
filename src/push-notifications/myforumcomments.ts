@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
-//admin.initializeApp(functions.config().firebase);
+const db = admin.firestore();
 
 export const sendForumNotification = functions.firestore
   .document('forumcomments/{id}')
@@ -22,7 +22,6 @@ export const sendForumNotification = functions.firestore
       };
 
       // ref to the parent document
-      const db = admin.firestore();
       const forumRef = db.collection('forumposts').doc(forumPostId);
 
       // get users tokens and send notifications
