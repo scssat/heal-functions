@@ -10,7 +10,7 @@ export const aggregateStoryComments = functions.firestore
     }/{commentId}`
   )
   .onWrite((change, context) => {
-    const comment = change.after.data();
+    //const comment = change.after.data();
     const storyId = context.params.storyId;
 
     if (!change.after.exists) {

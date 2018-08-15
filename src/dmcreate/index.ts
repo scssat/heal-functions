@@ -79,7 +79,9 @@ export const dmSendMessage = functions.firestore
             lastMessage: new Date(),
             avatar: dmMessage.sendAvatar
           };
-          createDMUser(newDMUser, sendDM, messageRef);
+          createDMUser(newDMUser, sendDM, messageRef).catch(err =>
+            console.log('ERROR - createDMUser', err)
+          );
         }
 
         sendMessageRef

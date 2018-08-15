@@ -9,9 +9,12 @@ export const postHeartCreate = functions.firestore
     const postHeart = snap.data();
 
     const docRef = db.collection(shared.MBH_FORUM).doc(postHeart.postId);
-    docRef.get().then(querySnapshot => {
-      let post = querySnapshot.data();
-      post.numberOfHearts++;
-      docRef.update(post);
-    });
+    docRef
+      .get()
+      .then(querySnapshot => {
+        const post = querySnapshot.data();
+        post.numberOfHearts++;
+        docRef.update(post);
+      })
+      .catch(err => console.log('Error reding POST, (postHeartCreate)', err));
   });

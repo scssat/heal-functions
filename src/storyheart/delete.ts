@@ -9,9 +9,12 @@ export const storyHeartDelete = functions.firestore
     const storyHeart = snap.data();
 
     const docRef = db.collection(shared.MY_STORIES).doc(storyHeart.storyId);
-    docRef.get().then(querySnapshot => {
-      let mystory = querySnapshot.data();
-      mystory.numberOfHearts--;
-      docRef.update(mystory);
-    });
+    docRef
+      .get()
+      .then(querySnapshot => {
+        const mystory = querySnapshot.data();
+        mystory.numberOfHearts--;
+        docRef.update(mystory);
+      })
+      .catch(err => console.log('Error reding STORY, (storyHeartDelete)', err));
   });
