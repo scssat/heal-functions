@@ -5,7 +5,7 @@ import * as shared from '../collections';
 
 export const storyHeartCreate = functions.firestore
   .document(`${shared.STORY_HEARTS}/{heartId}`)
-  .onCreate(async (snap, context) => {
+  .onCreate((snap, context) => {
     const storyHeart = snap.data();
 
     const docRef = db.collection(shared.MY_STORIES).doc(storyHeart.storyId);
@@ -17,4 +17,6 @@ export const storyHeartCreate = functions.firestore
         docRef.update(mystory);
       })
       .catch(err => console.log('Error reding STORY, (storyHeartCreate)', err));
+    console.log('Story HEART created!');
+    return null;
   });

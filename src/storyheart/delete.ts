@@ -5,7 +5,7 @@ import * as shared from '../collections';
 
 export const storyHeartDelete = functions.firestore
   .document(`${shared.STORY_HEARTS}/{heartId}`)
-  .onDelete(async (snap, context) => {
+  .onDelete((snap, context) => {
     const storyHeart = snap.data();
 
     const docRef = db.collection(shared.MY_STORIES).doc(storyHeart.storyId);
@@ -17,4 +17,6 @@ export const storyHeartDelete = functions.firestore
         docRef.update(mystory);
       })
       .catch(err => console.log('Error reding STORY, (storyHeartDelete)', err));
+    console.log('Story HEART deleted!');
+    return null;
   });

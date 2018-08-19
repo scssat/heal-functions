@@ -11,7 +11,7 @@ export const createEvents = functions.https.onRequest(async (req, res) => {
   // const settings = { timestampsInSnapshots: true };
   //admin.firestore().settings(settings);
 
-  docRef
+  await docRef
     .where('active', '==', true)
     .orderBy('email', 'asc')
     .get()
@@ -52,7 +52,7 @@ async function analyzeMedication(email, res) {
   );
 
   // Create medication events in calendar
-  docRefMedication
+  await docRefMedication
     .where('active', '==', true)
     .orderBy('medicationName', 'asc')
     .get()
@@ -87,7 +87,7 @@ async function analyzeMesurement(email, res) {
   const measurements = [];
 
   // Create measurement events in calendar
-  docRefMeasurement
+  await docRefMeasurement
     .where('copyToCalendar', '==', true)
     .orderBy('name', 'asc')
     .get()

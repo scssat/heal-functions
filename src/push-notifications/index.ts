@@ -1,5 +1,5 @@
-export { sendSupportNotification } from './supportposts';
-export { sendStoryNotification } from './mystoriescomments';
-export { sendForumNotification } from './myforumcomments';
-export { sendinternalMessageNotification } from './mymessage';
-export { sendDMmessageNotification } from './dmuser';
+export { supportNotification } from './supportposts';
+export { storyCommentNotification } from './mystoriescomments';
+export { forumCommentNotification } from './myforumcomments';
+export { internalMessageNotification } from './mymessage';
+export { dmUserNotification } from './dmuser';

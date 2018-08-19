@@ -26,7 +26,7 @@ export const aggregateStoryComments = functions.firestore
     );
 
     // get all comments and aggregate
-    commentRef
+    return commentRef
       .orderBy('created', 'desc')
       .get()
       .then(querySnapshot => {
@@ -47,11 +47,11 @@ export const aggregateStoryComments = functions.firestore
 
         // data to update on the document
         const data = { numberOfComments, recentComments, lastUpdate };
+        console.log('Storycomments aggregated!');
         // run update
         return postRef
           .update(data)
           .catch(err => console.log('Error when writing to story', err));
       })
       .catch(err => console.log('Error when reading storycomments', err));
-    return null;
   });

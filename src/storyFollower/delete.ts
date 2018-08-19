@@ -9,12 +9,13 @@ export const storyFollowerDelete = functions.firestore
     const storyFollow = snap.data();
 
     const docRef = db.collection('users').doc(storyFollow.followedid);
-    docRef
+    return docRef
       .get()
       .then(querySnapshot => {
         const user = querySnapshot.data();
         user.storyFollowers--;
         docRef.update(user);
+        console.log('Story follower deleted & user updated!');
       })
       .catch(err =>
         console.log('Error reding USER, (storyFollowerDelete)', err)

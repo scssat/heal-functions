@@ -19,7 +19,7 @@ export const aggregateComments = functions.firestore
     const commentRef = db.collection(`${mbhCollection.MBH_FORUM_COMMENTS}`);
 
     // get all comments and aggregate
-    commentRef
+    return commentRef
       .where('forumPostId', '==', comment.forumPostId)
       .orderBy('created', 'desc')
       .get()
@@ -42,10 +42,10 @@ export const aggregateComments = functions.firestore
         // data to update on the document
         const data = { numberOfComments, recentComments, lastUpdate };
         // run update
+        console.log('POSTs comments aggreated!');
         return postRef
           .update(data)
           .catch(err => console.log('Error when writing to post', err));
       })
       .catch(err => console.log('Error when reading comments', err));
-    return null;
   });

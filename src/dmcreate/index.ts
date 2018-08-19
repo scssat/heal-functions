@@ -104,7 +104,7 @@ export const dmSendMessage = functions.firestore
         const notification = {
           created: new Date(),
           from: displayUser,
-          decription: 'Ny medling fra bruker ' + displayUser,
+          description: 'Ny medling fra bruker ' + displayUser,
           type: 'DMmessage',
           link: '/sendmessages/dm',
           id: fromUserId
@@ -131,8 +131,6 @@ export const dmSendMessage = functions.firestore
         console.log('DM create execution complete.');
       })
       .catch(err => console.log(err));
-    console.log('DM create execution complete.');
-    return null;
   });
 
 async function createDMUser(newDMUser, sendDM, messageRef) {

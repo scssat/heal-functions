@@ -9,12 +9,13 @@ export const postHeartDelete = functions.firestore
     const postHeart = snap.data();
 
     const docRef = db.collection(shared.MBH_FORUM).doc(postHeart.postId);
-    docRef
+    return docRef
       .get()
       .then(querySnapshot => {
         const post = querySnapshot.data();
         post.numberOfHearts--;
         docRef.delete(post);
+        console.log('POST HEART deleted!');
       })
       .catch(err => console.log('Error reding POST, (postHeartDelete)', err));
   });
