@@ -27,7 +27,6 @@ export const createEvents = functions.https.onRequest(async (req, res) => {
           console.log(`Error when analyzing users! - ${err}`);
           res.end();
         });
-        //console.log(shared.USERS, user.email, shared.MY_MEDICATION_CABINET);
       });
       console.log(`Number users analyzed:${users.length}`);
       return null;
@@ -39,10 +38,14 @@ export const createEvents = functions.https.onRequest(async (req, res) => {
 });
 
 async function analyzeAll(email, res) {
-  await Promise.all([
-    analyzeMedication(email, res),
-    analyzeMesurement(email, res)
-  ]).catch(err => console.log(`Error when analyzing user: ${email}! - ${err}`));
+  await analyzeMedication(email, res).catch(err =>
+    console.log(`Error when analyzing medication for user: ${email}! - ${err}`)
+  );
+  await analyzeMesurement(email, res).catch(err =>
+    console.log(
+      `Error when analyzing measurements for user: ${email}! - ${err}`
+    )
+  );
 }
 
 async function analyzeMedication(email, res) {
@@ -76,7 +79,6 @@ async function analyzeMedication(email, res) {
     })
     .catch(err => {
       console.log(`Error when reading medications! - ${err}`);
-      res.status(500).send(err);
     });
 }
 
@@ -108,9 +110,7 @@ async function analyzeMesurement(email, res) {
     })
     .catch(err => {
       console.log(`Error when reading measurements! - ${err}`);
-      res.status(500).send(err);
     });
-  res.send('Create calendar event trigger: execution successfully completed!');
 }
 
 function createMedicationEvents(id, medicationCabinet, email) {

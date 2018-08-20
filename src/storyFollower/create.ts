@@ -9,7 +9,7 @@ export const storyFollowerCreate = functions.firestore
   .onCreate(async (snap, context) => {
     const storyFollow = snap.data();
     const id = context.params.id;
-    const followUserRef = db.collection('users').doc(storyFollow.followerid);
+    const followUserRef = db.collection('users').doc(storyFollow.followedid);
     const followedRef = db.collection(`${shared.FOLLOWER_STORY}`).doc(id);
 
     return followUserRef
