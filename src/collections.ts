@@ -17,6 +17,7 @@ export const RESPONSE_MESSAGE = 'responsemessage';
 export const RECIPE = 'recipe';
 export const RECIPE_CATEGORY = 'recipeCategory';
 export const INGRIDENT = 'ingredient';
+export const PATIENT_ORGANIZATION = 'patientOrganizations';
 
 export const HASH_TAG_LIBRARY = 'hashTagLibrary';
 
@@ -60,10 +61,10 @@ export const FOLLOWER_STORY = 'storyFollower';
 
 //Forum collections
 export const MBH_FORUM = 'forumposts';
-export const FORUM_HEARTS = 'forumHeart';
+export const MBH_FORUM_HEARTS = 'forumHeart';
 export const MBH_FORUM_COMMENTS = 'forumcomments';
-export const FOLLOWER_FORUM = 'forumFollower';
-export const FORUM_HASHTAG = 'forumHashtag';
+export const MBH_FOLLOWER_FORUM = 'forumRelationships';
+export const MBH_FORUM_HASHTAG = 'forumHashtag';
 
 export const HEALTH_PROFILE = 'healthProfile';
 
@@ -130,7 +131,8 @@ export const enum NotificationTypes {
   DirectMessage = 'DirectMessage',
   Forum = 'Forum',
   InternalEmail = 'InternalEmail',
-  Calendar = 'Calendar'
+  Calendar = 'Calendar',
+  StoryFollower = 'storyFollower'
 }
 
 export const enum NotificationTypesNo {
@@ -139,5 +141,6 @@ export const enum NotificationTypesNo {
   DirectMessage = 'Melding fra bruker',
   Forum = 'Forum',
   InternalEmail = 'Intern email',
-  Calendar = 'Kalender'
+  Calendar = 'Kalender',
+  StoryFollower = 'Følger Min Historie'
 }

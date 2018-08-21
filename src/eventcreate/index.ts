@@ -29,6 +29,7 @@ export const createEvents = functions.https.onRequest(async (req, res) => {
         });
       });
       console.log(`Number users analyzed:${users.length}`);
+      res.send('OK');
       return null;
     })
     .catch(err => {
@@ -46,6 +47,8 @@ async function analyzeAll(email, res) {
       `Error when analyzing measurements for user: ${email}! - ${err}`
     )
   );
+  res.send('OK');
+  return null;
 }
 
 async function analyzeMedication(email, res) {
