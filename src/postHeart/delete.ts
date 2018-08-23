@@ -4,7 +4,7 @@ const db = admin.firestore();
 import * as shared from '../collections';
 
 export const postHeartDelete = functions.firestore
-  .document(`${shared.FORUM_HEARTS}/{heartId}`)
+  .document(`${shared.MBH_FORUM_HEARTS}/{heartId}`)
   .onDelete(async (snap, context) => {
     const postHeart = snap.data();
 

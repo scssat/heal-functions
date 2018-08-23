@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import * as shared from '../collections';
 const db = admin.firestore();
 
 export const forumCommentNotification = functions.firestore
@@ -23,7 +24,7 @@ export const forumCommentNotification = functions.firestore
       created: new Date(),
       from: displayUser,
       description: 'Nytt svar på ditt innlegg på forum',
-      type: 'ForumComment',
+      type: shared.NotificationTypes.ForumComment,
       link: '/forum/postcomment/' + forumPostId,
       id: forumPostId
     };

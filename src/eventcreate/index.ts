@@ -8,8 +8,8 @@ const db = admin.firestore();
 
 export const createEvents = functions.https.onRequest(async (req, res) => {
   const docRef = db.collection(shared.USERS);
-  // const settings = { timestampsInSnapshots: true };
-  //admin.firestore().settings(settings);
+  const settings = { timestampsInSnapshots: true };
+  admin.firestore().settings(settings);
 
   await docRef
     .where('active', '==', true)
@@ -36,6 +36,7 @@ export const createEvents = functions.https.onRequest(async (req, res) => {
       console.log(`Error when reading users! - ${err}`);
       res.end();
     });
+  res.send('OK end EVENT MAIN create');
 });
 
 async function analyzeAll(email, res) {
@@ -47,8 +48,7 @@ async function analyzeAll(email, res) {
       `Error when analyzing measurements for user: ${email}! - ${err}`
     )
   );
-  res.send('OK');
-  return null;
+  res.send('OK end EVENT ANALYZE ALL create');
 }
 
 async function analyzeMedication(email, res) {

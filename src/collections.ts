@@ -126,13 +126,16 @@ export const weekDays = [
 ];
 
 export const enum NotificationTypes {
-  FamilyPost = 'support',
+  FamilyPost = 'Support',
   MyStoryComment = 'MyStoryComment',
   DirectMessage = 'DirectMessage',
   Forum = 'Forum',
   InternalEmail = 'InternalEmail',
   Calendar = 'Calendar',
-  StoryFollower = 'storyFollower'
+  CalendarReminder = 'CalendarReminder',
+  NewPostGroup = 'NewPostGroup',
+  StoryFollower = 'storyFollower',
+  ForumComment = 'ForumComment'
 }
 
 export const enum NotificationTypesNo {

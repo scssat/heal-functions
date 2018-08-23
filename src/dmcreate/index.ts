@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import * as shared from '../collections';
 const db = admin.firestore();
 
 // Create a notification if on the RECEIVER side of the DM
@@ -20,7 +21,6 @@ export const dmSendMessage = functions.firestore
     const dmMessageId = context.params.id;
     const fromUserId = dmMessage.fromUserId;
     const toUserId = dmMessage.fromUserId;
-    const userEmail = dmMessage.toUserId;
     const dmUserId = dmMessage.displayUser;
     const ownerId = dmMessage.toUserId;
     const displayUser = dmMessage.displayUser;
@@ -88,24 +88,14 @@ export const dmSendMessage = functions.firestore
           .update(dmMessage)
           .catch(err => console.log('ERROR - Update DM message', err));
 
-        // Message details for end user
-        const payload = {
-          notification: {
-            title: 'Ny melding fra bruker!',
-            body: `${displayUser} har send deg ny melding.`,
-            icon: '//https://placeimg.com/200/200/any'
-          }
-        };
-
         // get users tokens and send notifications
-        const userRef = db.collection('users').doc(toUserId);
         const notRef = db.collection(`users/${toUserId}/notifications`);
 
         const notification = {
           created: new Date(),
           from: displayUser,
           description: 'Ny medling fra bruker ' + displayUser,
-          type: 'DMmessage',
+          type: shared.NotificationTypesNo.DirectMessage,
           link: '/sendmessages/dm',
           id: fromUserId
         };
@@ -114,20 +104,6 @@ export const dmSendMessage = functions.firestore
           .add(notification)
           .catch(err => console.log('ERROR - Creating notification:', err));
 
-        userRef
-          .get()
-          .then(snapshot1 => snapshot1.data())
-          .then(user => {
-            const tokens = user.fcmTokens ? Object.keys(user.fcmTokens) : [];
-
-            if (!tokens.length) {
-              throw new Error('User does not have any tokens!');
-            }
-
-            console.log('DM notification sendt to user:', userEmail);
-            return admin.messaging().sendToDevice(tokens, payload);
-          })
-          .catch(err => console.log(err));
         console.log('DM create execution complete.');
       })
       .catch(err => console.log(err));

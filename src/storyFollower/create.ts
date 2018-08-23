@@ -36,7 +36,7 @@ export const storyFollowerCreate = functions.firestore
           created: new Date(),
           from: followerDisplayUser,
           description: 'Ny følger av dine historier:' + followerDisplayUser,
-          type: 'storyFollower',
+          type: shared.NotificationTypesNo.StoryFollower,
           link: '',
           id: ''
         };

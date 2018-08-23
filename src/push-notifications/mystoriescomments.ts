@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import * as shared from '../collections';
 const db = admin.firestore();
 
 export const storyCommentNotification = functions.firestore
@@ -20,7 +21,7 @@ export const storyCommentNotification = functions.firestore
       created: new Date(),
       from: displayUser,
       description: 'Ny kommentar til historie er opprettet',
-      type: 'MyStoryComment',
+      type: shared.NotificationTypesNo.MyStoryComment,
       link: '/mysociety/myhistories',
       id: storyId
     };

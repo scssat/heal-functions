@@ -1,10 +1,10 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
-import * as mbhCollection from '../collections';
+import * as shared from '../collections';
 const db = admin.firestore();
 
 export const internalMessageNotification = functions.firestore
-  .document(`users/{userId}/${mbhCollection.MY_INCOMMING_MESSAGES}/{messageId}`)
+  .document(`users/{userId}/${shared.MY_INCOMMING_MESSAGES}/{messageId}`)
   .onCreate(async (snap, context) => {
     const message = snap.data();
     const title = message.title;
@@ -14,9 +14,9 @@ export const internalMessageNotification = functions.firestore
     const notRef = db.collection(`users/${email}/notifications`);
     const notification = {
       created: new Date(),
-      from: 'MinBehandling Sentral',
-      description: title,
-      type: 'InternalEmail',
+      from: 'HEAL Sentral',
+      description: 'Intern mail:' + title,
+      type: shared.NotificationTypesNo.InternalEmail,
       link: `sendmessages/editsendmessage/${messageId}`,
       id: messageId
     };
