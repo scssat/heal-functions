@@ -28,36 +28,52 @@ export const postCreate = functions.firestore
         console.log('Error reding FOLLOW USER, (post create)', err)
       );
 
-    const forumGroupFollwersRef = db.collection(shared.FORUM_GROUPS);
+    const forumGroupFollwersRef = db
+      .collection(shared.FORUM_GROUPS)
+      .where('followedGroup', '==', post.forumGroup);
 
-    return forumGroupFollwersRef
-      .where('followedGroup', '==', post.forumGroup)
-      .get()
-      .then(followerData => {
-        followerData.forEach(doc => {
-          const followerRelationship = doc.data();
-          // CREATE NOTIFICATION
+    return db
+      .runTransaction(transaction => {
+        return transaction
+          .get(forumGroupFollwersRef)
+          .then(followerData => {
+            followerData.forEach(doc => {
+              const followerRelationship = doc.data();
+              // CREATE NOTIFICATION
+              if (doc.data().size > 500) {
+                // Transaction must be split into chunks or batches.
+                console.log(
+                  'Forum group notification is not complete, number of followers > 500'
+                );
+              }
 
-          const notRef = db.collection(
-            `users/${followerRelationship.followerid}/notifications`
-          );
+              const notRef = db.collection(
+                `users/${followerRelationship.followerid}/notifications`
+              );
 
-          const notification = {
-            created: new Date(),
-            from: 'Forum:' + post.forumGroup,
-            description: 'Ny post på forum:' + post.title,
-            type: shared.NotificationTypesNo.Forum,
-            link: '',
-            id: ''
-          };
+              const notification = {
+                created: new Date(),
+                from: 'Forum:' + post.forumGroup,
+                description: 'Ny post på forum:' + post.title,
+                type: shared.NotificationTypesNo.Forum,
+                link: '',
+                id: ''
+              };
 
-          createNotification(notification, notRef).catch(err => {
-            console.log(`Error - create notifications! - ${err}`);
+              createNotification(notification, notRef).catch(err => {
+                console.log(`Error - create notifications! - ${err}`);
+              });
+            });
+          })
+          .catch(err => {
+            console.log(`Error updating forum groups! - ${err}`);
           });
-        });
+      })
+      .then(() => {
+        console.log('Transaction uupdate successfully completed!');
       })
       .catch(err => {
-        console.log(`Error updating forum groups! - ${err}`);
+        console.log(`Error in transaction updating forum group! - ${err}`);
       });
   });
 

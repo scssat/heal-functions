@@ -31,7 +31,7 @@ export const aggregateStoryComments = functions.firestore
       .get()
       .then(querySnapshot => {
         // get the total comment count
-        const numberOfComments = querySnapshot.size + 1;
+        const numberOfComments = querySnapshot.size;
 
         let recentComments = [];
 

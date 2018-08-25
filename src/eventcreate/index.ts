@@ -6,38 +6,38 @@ import { CalendarEvent } from '../models/event.model';
 admin.initializeApp();
 const db = admin.firestore();
 
-export const createEvents = functions.https.onRequest(async (req, res) => {
-  const docRef = db.collection(shared.USERS);
-  const settings = { timestampsInSnapshots: true };
-  admin.firestore().settings(settings);
+export const createEvents = functions.https.onRequest(
+  async (request, response) => {
+    const docRef = db.collection(shared.USERS);
+    const settings = { timestampsInSnapshots: true };
+    admin.firestore().settings(settings);
 
-  await docRef
-    .where('active', '==', true)
-    .orderBy('email', 'asc')
-    .get()
-    .then(querySnapshot => {
-      const users = [];
-      querySnapshot.forEach(doc => {
-        users.push(doc.data());
-      });
-
-      //res.send(users);
-      users.forEach(user => {
-        analyzeAll(user.email, res).catch(err => {
-          console.log(`Error when analyzing users! - ${err}`);
-          res.end();
+    await docRef
+      .where('active', '==', true)
+      .orderBy('email', 'asc')
+      .get()
+      .then(querySnapshot => {
+        const users = [];
+        querySnapshot.forEach(doc => {
+          users.push(doc.data());
         });
+
+        //res.send(users);
+        users.forEach(user => {
+          analyzeAll(user.email, response).catch(err => {
+            console.log(`Error when analyzing users! - ${err}`);
+            response.end();
+          });
+        });
+        console.log(`Number users analyzed:${users.length}`);
+        response.send('OK');
+      })
+      .catch(err => {
+        console.log(`Error when reading users! - ${err}`);
+        response.end();
       });
-      console.log(`Number users analyzed:${users.length}`);
-      res.send('OK');
-      return null;
-    })
-    .catch(err => {
-      console.log(`Error when reading users! - ${err}`);
-      res.end();
-    });
-  res.send('OK end EVENT MAIN create');
-});
+  }
+);
 
 async function analyzeAll(email, res) {
   await analyzeMedication(email, res).catch(err =>
@@ -48,7 +48,7 @@ async function analyzeAll(email, res) {
       `Error when analyzing measurements for user: ${email}! - ${err}`
     )
   );
-  res.send('OK end EVENT ANALYZE ALL create');
+  //res.send('OK end EVENT ANALYZE ALL create');
 }
 
 async function analyzeMedication(email, res) {
