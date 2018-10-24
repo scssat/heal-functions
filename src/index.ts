@@ -1,4 +1,4 @@
-export { createEvents } from './eventcreate'; // Includes initializeApp()
+export { userCreate } from './usercreate'; // Includes initializeApp()
 export {
   supportNotification,
   storyCommentNotification,
@@ -6,6 +6,7 @@ export {
   internalMessageNotification
 } from './push-notifications';
 export { dmSendMessage } from './dmcreate';
+export { recurringPayment } from './stripe';
 export { aggregateComments } from './forumaggregate';
 export { aggregateStoryComments } from './storyaggregate';
 export { storyHeartDelete, storyHeartCreate } from './storyheart';

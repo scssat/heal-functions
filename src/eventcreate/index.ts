@@ -3,7 +3,6 @@ import * as functions from 'firebase-functions';
 import * as moment from 'moment';
 import * as shared from '../collections';
 import { CalendarEvent } from '../models/event.model';
-admin.initializeApp();
 const db = admin.firestore();
 
 export const createEvents = functions.https.onRequest(

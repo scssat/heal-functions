@@ -1,19 +1,56 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import * as mbhCollection from '../collections';
+admin.initializeApp();
 const db = admin.firestore();
+const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
+const stripe = require('stripe')(firebaseConfig.stripe.testkey);
 
-export const dmSendMessage = functions.firestore
+export const userCreate = functions.firestore
   .document('users/{userId}')
   .onCreate((snap, context) => {
     const email = context.params.userId;
+    let user = snap.data();
+
+    const userRef = db.collection('users').doc(email);
 
     console.log('INIT new user start');
 
     copyAll(email).catch(err => console.log('Error copying user data!', err));
 
-    console.log('INIT NEW user execution complete.');
-    return null;
+    // Create subscription in Stripe and PAY!
+    return stripe.customers
+      .create({
+        email: user.email
+      })
+      .then(customer => {
+        /// update database with stripe customer id
+        user.stripeCustomerId = customer.id;
+        return stripe.subscriptions
+          .create({
+            customer: user.stripeCustomerId,
+            source: user.stripeTokenId,
+            items: [
+              {
+                plan: 'HEAL-Monthly'
+              }
+            ]
+          })
+          .then(sub => {
+            this.userRef
+              .update({
+                stripeCustomerId: user.stripeCustomerId,
+                statues: 'active',
+                active: true
+              })
+              .catch(err =>
+                console.log('ERROR - CREATING STRIPE payment:', err)
+              );
+          })
+          .catch(err =>
+            console.log('ERROR - UPDATING STRIPE relationship:', err)
+          );
+      });
   });
 
 async function copyAll(email: string) {
@@ -169,6 +206,7 @@ function createMeasurements(email: string): Promise<any> {
           measurementURL: measurementLibraryCopy.measurementURL,
           graphURL: measurementLibraryCopy.graphURL,
           description: '',
+          reminder: 0,
           copyToCalendar: false,
           lastCalendarUpdate: null,
           general: measurementLibraryCopy.general,
