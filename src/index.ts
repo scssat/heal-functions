@@ -1,4 +1,4 @@
-export { userCreate } from './usercreate'; // Includes initializeApp()
+export { userCreate, userUpdate } from './usercreate'; // Includes initializeApp()
 export {
   supportNotification,
   storyCommentNotification,
