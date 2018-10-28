@@ -4,7 +4,7 @@ const db = admin.firestore();
 const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
 const stripe = require('stripe')(firebaseConfig.stripe.testkey);
 
-export const startSubscription = functions.https.onCall(
+export const reactiveateSubscription = functions.https.onCall(
   async (data, context) => {
     const userId = context.auth.token.email || null;
 
@@ -16,15 +16,15 @@ export const startSubscription = functions.https.onCall(
     const user = userDoc.data();
 
     const subscription = await stripe.subscriptions.retrieve(
-      'sub_49ty4767H20z6a'
+      user.subscriptionId
     );
 
-    const sub = stripe.subscriptions.update('sub_49ty4767H20z6a', {
+    const sub = stripe.subscriptions.update(user.subscriptionId, {
       cancel_at_period_end: false,
       items: [
         {
           id: subscription.items.data[0].id,
-          plan: 'plan_CBb6IXqvTLXp3f'
+          plan: 'HEAL-Monthly'
         }
       ]
     });
@@ -35,7 +35,9 @@ export const startSubscription = functions.https.onCall(
 
     // Update user document
     return db.doc(`users/${userId}`).update({
-      status: 'activated'
+      status: 'activated',
+      active: true,
+      terminationDate: null
     });
   }
 );

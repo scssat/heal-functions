@@ -6,7 +6,7 @@ export {
   internalMessageNotification
 } from './push-notifications';
 export { dmSendMessage } from './dmcreate';
-export { recurringPayment } from './stripe';
+export { recurringPayment, reactiveateSubscription } from './stripe';
 export { aggregateComments } from './forumaggregate';
 export { aggregateStoryComments } from './storyaggregate';
 export { storyHeartDelete, storyHeartCreate } from './storyheart';

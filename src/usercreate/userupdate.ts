@@ -16,6 +16,10 @@ export const userUpdate = functions.firestore
       return null;
     }
 
+    if (user.status === 'pastDue') {
+      return null;
+    }
+
     // Create subscription in Stripe and PAY!
 
     return stripe.subscriptions
@@ -31,10 +35,12 @@ export const userUpdate = functions.firestore
       .then(sub => {
         this.userRef
           .update({
+            registered: new Date(),
             subscriptionId: sub.id,
             subscriptionStart: sub.current_period_start,
             subscriptionEnd: sub.current_period_end,
             stripeCustomerId: user.stripeCustomerId,
+            lastPaymentStatus: 'Success',
             status: 'active',
             active: true,
             terminationDate: null

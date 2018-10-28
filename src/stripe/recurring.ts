@@ -25,6 +25,7 @@ export const recurringPayment = functions.https.onRequest(async (req, res) => {
 
       let status = '';
       let active = false;
+      let terminationDate = null;
       // Handle successful payment webhook
       if (hook === 'invoice.payment_succeeded') {
         status = 'active';
@@ -34,10 +35,17 @@ export const recurringPayment = functions.https.onRequest(async (req, res) => {
       // Handle failed payment webhook
       if (hook === 'invoice.payment_failed') {
         status = 'pastDue';
+        terminationDate = user.terminationDate;
+        active = false;
       }
 
       userUpdate
-        .update({ status: status, active: active })
+        .update({
+          status: status,
+          active: active,
+          terminationDate: terminationDate,
+          lastPaymentStatus: hook
+        })
         .catch(err => console.log('ERROR - UPDATING payment status:', err));
     })
     .catch(err => {
