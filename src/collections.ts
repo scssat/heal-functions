@@ -1,5 +1,6 @@
 export const USERS = 'users';
 export const USER_TYPES = 'userTypes';
+export const USER_TYPE_FAMILY = 'family';
 export const USER_LINKS = 'userLinks';
 export const FORUM_GROUPS = 'forumGroups'; // Not in use
 export const CANCER_TYPES = 'cancerTypes';
@@ -18,8 +19,16 @@ export const RECIPE = 'recipe';
 export const RECIPE_CATEGORY = 'recipeCategory';
 export const INGRIDENT = 'ingredient';
 export const PATIENT_ORGANIZATION = 'patientOrganizations';
+export const PAYMENTS = 'payments';
+export const CUSTOMERS = 'customers';
+export const SUBSCRIPTION_PLANS = 'subscriptionPlans';
+export const STATUS_PAST_DUE = 'pastDue';
+export const STATUS_ACTIVE = 'active';
 
 export const HASH_TAG_LIBRARY = 'hashTagLibrary';
+
+//Stripe
+export const STRIPE_PLAN_ID = 'plan_DsJ6iJphx8orgO';
 
 // NIU
 export const TASKS = 'tasks';
@@ -32,9 +41,8 @@ export const ENVENT_TYPE_MANUAL = 'Manual';
 export const ENVENT_TYPE_MEDICATION = 'Medication';
 export const ENVENT_TYPE_TRANSPORTATION = 'Transportation';
 export const ENVENT_TYPE_TREATMENT = 'Treatment';
+export const ENVENT_TYPE_TREATMENT_MED = 'TreatmentMedication';
 export const ENVENT_TYPE_MEASUREMENT = 'Measurement';
-export const ENVENT_MEDICATION_COLOR = 'Red';
-export const ENVENT_TRANSPORTATION_COLOR = 'Orange';
 
 export const MY_TREATMENT = 'myTreatment';
 export const MY_TREATMENT_HISTORY = 'myMedicalHistory';
@@ -87,6 +95,7 @@ export const MY_IMAGES = 'images';
 export const MY_DOCUMENTS = 'documents';
 export const MY_INCOMMING_MESSAGES = 'mymessages';
 export const MY_DIAGNOSE = 'diagnose';
+export const MY_AVATARS = 'myAvatars';
 
 // System storage paths
 export const PROFILE_PICTS = 'profilepicts';

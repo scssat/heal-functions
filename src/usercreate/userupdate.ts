@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import * as shared from '../collections';
 
 const db = admin.firestore();
 const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
@@ -9,7 +10,7 @@ export const userUpdate = functions.firestore
   .document('users/{userId}')
   .onUpdate((change, context) => {
     const user = change.after.data();
-    const email = context.params.userId;
+    // const email = context.params.userId;
     const userRef = db.collection('users').doc(user.email);
 
     if (!change.after.data() || user.status === 'active') {
@@ -28,12 +29,12 @@ export const userUpdate = functions.firestore
         source: user.stripeTokenId,
         items: [
           {
-            plan: 'HEAL-Monthly'
+            plan: shared.STRIPE_PLAN_ID
           }
         ]
       })
       .then(sub => {
-        this.userRef
+        userRef
           .update({
             registered: new Date(),
             subscriptionId: sub.id,

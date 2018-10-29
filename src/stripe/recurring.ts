@@ -18,7 +18,7 @@ export const recurringPayment = functions.https.onRequest(async (req, res) => {
   return userRef
     .get()
     .then(querySnapshot => {
-      let user = querySnapshot[0].data();
+      const user = querySnapshot[0].data();
       email = user.email;
 
       const userUpdate = db.collection(`${shared.USERS}`).doc(email);

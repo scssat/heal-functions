@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import * as mbhCollection from '../collections';
-import { isDate } from 'moment';
+
 admin.initializeApp();
 const db = admin.firestore();
 const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
@@ -10,14 +10,16 @@ const stripe = require('stripe')(firebaseConfig.stripe.testkey);
 export const userCreate = functions.firestore
   .document('users/{userId}')
   .onCreate((snap, context) => {
-    const email = context.params.userId;
-    let user = snap.data();
+    //const email = context.params.userId;
+    const user = snap.data();
 
-    const userRef = db.collection('users').doc(email);
+    const userRef = db.collection('users').doc(user.email);
 
     console.log('INIT new user start');
 
-    copyAll(email).catch(err => console.log('Error copying user data!', err));
+    copyAll(user.email).catch(err =>
+      console.log('Error copying user data!', err)
+    );
 
     // Create subscription in Stripe and PAY!
     return stripe.customers

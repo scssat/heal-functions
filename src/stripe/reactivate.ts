@@ -1,5 +1,7 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import * as shared from '../collections';
+
 const db = admin.firestore();
 const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
 const stripe = require('stripe')(firebaseConfig.stripe.testkey);
@@ -24,7 +26,7 @@ export const reactiveateSubscription = functions.https.onCall(
       items: [
         {
           id: subscription.items.data[0].id,
-          plan: 'HEAL-Monthly'
+          plan: shared.STRIPE_PLAN_ID
         }
       ]
     });
