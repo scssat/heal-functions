@@ -3,12 +3,12 @@ import * as functions from 'firebase-functions';
 import * as shared from '../collections';
 
 const db = admin.firestore();
-const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
-const stripe = require('stripe')(firebaseConfig.stripe.testkey);
+import * as Stripe from 'stripe';
+const stripe = new Stripe(functions.config().stripe.secret);
 
 export const reactiveateSubscription = functions.https.onCall(
   async (data, context) => {
-    const userId = context.auth.token.email || null;
+    const userId = data.email || null;
 
     if (!userId) {
       throw new Error('Not valid user');

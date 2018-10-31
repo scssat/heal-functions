@@ -1,0 +1,4 @@
+[32m+ [39m Functions config updated.
+
+Please deploy your functions for the change to take effect by running [1mfirebase deploy --only functions[22m
+

@@ -3,8 +3,8 @@ import * as functions from 'firebase-functions';
 import * as shared from '../collections';
 
 const db = admin.firestore();
-const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
-const stripe = require('stripe')(firebaseConfig.stripe.testkey);
+import * as Stripe from 'stripe';
+const stripe = new Stripe(functions.config().stripe.secret);
 
 export const userUpdate = functions.firestore
   .document('users/{userId}')

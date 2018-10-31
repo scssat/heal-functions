@@ -4,8 +4,8 @@ import * as mbhCollection from '../collections';
 
 admin.initializeApp();
 const db = admin.firestore();
-const firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
-const stripe = require('stripe')(firebaseConfig.stripe.testkey);
+import * as Stripe from 'stripe';
+const stripe = new Stripe(functions.config().stripe.secret);
 
 export const userCreate = functions.firestore
   .document('users/{userId}')

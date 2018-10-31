@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.116",
+    "@types/stripe": "^6.0.3",
     "tslint": "^5.8.0",
     "typescript": "^2.5.3"
   },
