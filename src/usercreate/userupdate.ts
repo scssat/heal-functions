@@ -42,7 +42,7 @@ export const userUpdate = functions.firestore
             subscriptionEnd: sub.current_period_end,
             stripeCustomerId: user.stripeCustomerId,
             lastPaymentStatus: 'Success',
-            status: 'active',
+            status: shared.STATUS_ACTIVE,
             active: true,
             terminationDate: null
           })

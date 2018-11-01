@@ -1,3 +1,4 @@
+import { STATUS_PAST_DUE } from './../collections';
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import * as shared from '../collections';
@@ -28,13 +29,13 @@ export const recurringPayment = functions.https.onRequest(async (req, res) => {
       let terminationDate = null;
       // Handle successful payment webhook
       if (hook === 'invoice.payment_succeeded') {
-        status = 'active';
+        status = shared.STATUS_ACTIVE;
         active = true;
       }
 
       // Handle failed payment webhook
       if (hook === 'invoice.payment_failed') {
-        status = 'pastDue';
+        status = shared.STATUS_PAST_DUE;
         terminationDate = user.terminationDate;
         active = false;
       }
