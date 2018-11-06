@@ -27,5 +27,5 @@ export const supportNotification = functions.firestore
 
     return notRef
       .add(notification)
-      .catch(err => console.log('ERROR - Create notification:', err));
+      .catch(err => console.error('ERROR - Create notification:', err));
   });

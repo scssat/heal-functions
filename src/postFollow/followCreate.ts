@@ -21,9 +21,9 @@ export const forumGroupFollowerCreate = functions.firestore
 
         forumGroupRef
           .update(forumGroup)
-          .catch(err => console.log('ERROR - UPDATING FORUM GROUP:', err));
+          .catch(err => console.error('ERROR - UPDATING FORUM GROUP:', err));
       })
       .catch(err =>
-        console.log('Error reding FOLLOW USER, (forumGroupDelete)', err)
+        console.error('Error reding FOLLOW USER, (forumGroupDelete)', err)
       );
   });

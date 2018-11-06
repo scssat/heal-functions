@@ -13,7 +13,8 @@ export { storyHeartDelete, storyHeartCreate } from './storyheart';
 export { postHeartDelete, postHeartCreate } from './postheart';
 export { storyFollowerCreate, storyFollowerDelete } from './storyFollower';
 export { archiveChat } from './chatrooms';
-export { postCreate, postDelete } from './forumPost';
+export { postCreate, postUpdate, postDelete } from './forumPost';
+export { storyCreate } from './story';
 export {
   forumGroupFollowerCreate,
   forumGroupFollowerDelete

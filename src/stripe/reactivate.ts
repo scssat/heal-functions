@@ -46,8 +46,10 @@ export const reactiveateSubscription = functions.https.onCall(
             active: true,
             terminationDate: null
           })
-          .catch(err => console.log('ERROR - CREATING STRIPE payment:', err));
+          .catch(err => console.error('ERROR - CREATING STRIPE payment:', err));
       })
-      .catch(err => console.log('ERROR - UPDATING STRIPE relationship:', err));
+      .catch(err =>
+        console.error('ERROR - UPDATING STRIPE relationship:', err)
+      );
   }
 );

@@ -18,7 +18,7 @@ export const userCreate = functions.firestore
     console.log('INIT new user start');
 
     copyAll(user.email).catch(err =>
-      console.log('Error copying user data!', err)
+      console.error('Error copying user data!', err)
     );
 
     // Create subscription in Stripe and PAY!
@@ -31,7 +31,7 @@ export const userCreate = functions.firestore
         user.stripeCustomerId = customer.id;
         userRef
           .update(user)
-          .catch(err => console.log('Error updating user data!', err));
+          .catch(err => console.error('Error updating user data!', err));
       });
   });
 
@@ -100,7 +100,7 @@ function createVideolinks(email: string): Promise<any> {
         userVideoLibrary.add(newLink);
       });
     })
-    .catch(err => console.log('Error creating user video links', err));
+    .catch(err => console.error('Error creating user video links', err));
 }
 
 function createLinks(email: string): Promise<any> {
@@ -128,7 +128,7 @@ function createLinks(email: string): Promise<any> {
         userLinkLibrary.add(newLink);
       });
     })
-    .catch(err => console.log('Error creating user general links', err));
+    .catch(err => console.error('Error creating user general links', err));
 }
 
 function createMedication(email: string): Promise<any> {
@@ -159,7 +159,7 @@ function createMedication(email: string): Promise<any> {
         userMedcationLibrary.add(myMedicationLibrary);
       });
     })
-    .catch(err => console.log('Error creating user medication library', err));
+    .catch(err => console.error('Error creating user medication library', err));
 }
 
 function createMeasurements(email: string): Promise<any> {
@@ -199,7 +199,9 @@ function createMeasurements(email: string): Promise<any> {
         userMeasurementLibrary.add(myMeasurement);
       });
     })
-    .catch(err => console.log('Error creating user measurement library', err));
+    .catch(err =>
+      console.error('Error creating user measurement library', err)
+    );
 }
 
 function createNutriant(email: string): Promise<any> {
@@ -246,7 +248,7 @@ function createNutriant(email: string): Promise<any> {
         userNutriantLibrary.add(myNutritionLibrary);
       });
     })
-    .catch(err => console.log('Error creating user nutriant library', err));
+    .catch(err => console.error('Error creating user nutriant library', err));
 }
 
 function createNutridrink(email: string): Promise<any> {
@@ -289,7 +291,7 @@ function createNutridrink(email: string): Promise<any> {
         userNutridrinkLibrary.add(myNutridrink);
       });
     })
-    .catch(err => console.log('Error creating user nutriant library', err));
+    .catch(err => console.error('Error creating user nutriant library', err));
 }
 
 function createRecipes(email: string): Promise<any> {
@@ -339,13 +341,13 @@ function createRecipes(email: string): Promise<any> {
           .then(ref => {
             const myRecipeId = ref.id;
             createIngredient(myRecipeId, recipeId).catch(err =>
-              console.log('Error when creating ingridient (Add)', err)
+              console.error('Error when creating ingridient (Add)', err)
             );
           })
-          .catch(err => console.log('Error creating user recipe (Add)', err));
+          .catch(err => console.error('Error creating user recipe (Add)', err));
       });
     })
-    .catch(err => console.log('Error creating user recipe library', err));
+    .catch(err => console.error('Error creating user recipe library', err));
 }
 
 function createIngredient(newId, mainId: string): Promise<any> {
@@ -387,6 +389,6 @@ function createIngredient(newId, mainId: string): Promise<any> {
       });
     })
     .catch(err =>
-      console.log('Error creating user recipe ingredient library', err)
+      console.error('Error creating user recipe ingredient library', err)
     );
 }

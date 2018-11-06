@@ -16,7 +16,9 @@ export const storyHeartCreate = functions.firestore
         mystory.numberOfHearts++;
         docRef.update(mystory);
       })
-      .catch(err => console.log('Error reding STORY, (storyHeartCreate)', err));
+      .catch(err =>
+        console.error('Error reding STORY, (storyHeartCreate)', err)
+      );
     console.log('Story HEART created!');
     return null;
   });

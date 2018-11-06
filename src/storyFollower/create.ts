@@ -47,9 +47,9 @@ export const storyFollowerCreate = functions.firestore
 
         notRef
           .add(notification)
-          .catch(err => console.log('ERROR - Creating notification:', err));
+          .catch(err => console.error('ERROR - Creating notification:', err));
       })
       .catch(err =>
-        console.log('Error reding FOLLOW USER, (storyFollowerCreate)', err)
+        console.error('Error reding FOLLOW USER, (storyFollowerCreate)', err)
       );
   });

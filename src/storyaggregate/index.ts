@@ -51,7 +51,7 @@ export const aggregateStoryComments = functions.firestore
         // run update
         return postRef
           .update(data)
-          .catch(err => console.log('Error when writing to story', err));
+          .catch(err => console.error('Error when writing to story', err));
       })
-      .catch(err => console.log('Error when reading storycomments', err));
+      .catch(err => console.error('Error when reading storycomments', err));
   });

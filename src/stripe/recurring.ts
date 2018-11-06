@@ -1,4 +1,3 @@
-import { STATUS_PAST_DUE } from './../collections';
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import * as shared from '../collections';
@@ -50,7 +49,7 @@ export const recurringPayment = functions.https.onRequest(async (req, res) => {
         .catch(err => console.log('ERROR - UPDATING payment status:', err));
     })
     .catch(err => {
-      console.log(`Error when reading user! - ${err}`);
+      console.error(`Error when reading user! - ${err}`);
     })
     .then(() => res.status(200).send(`successfully handled ${hook}`))
     .catch(err => res.status(400).send(`error handling ${hook}`));

@@ -28,5 +28,5 @@ export const storyCommentNotification = functions.firestore
 
     return notRef
       .add(notification)
-      .catch(err => console.log('ERROR - Creating notification:', err));
+      .catch(err => console.error('ERROR - Creating notification:', err));
   });

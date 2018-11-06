@@ -16,7 +16,9 @@ export const storyHeartDelete = functions.firestore
         mystory.numberOfHearts--;
         docRef.update(mystory);
       })
-      .catch(err => console.log('Error reding STORY, (storyHeartDelete)', err));
+      .catch(err =>
+        console.error('Error reding STORY, (storyHeartDelete)', err)
+      );
     console.log('Story HEART deleted!');
     return null;
   });

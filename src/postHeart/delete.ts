@@ -17,5 +17,5 @@ export const postHeartDelete = functions.firestore
         docRef.delete(post);
         console.log('POST HEART deleted!');
       })
-      .catch(err => console.log('Error reding POST, (postHeartDelete)', err));
+      .catch(err => console.error('Error reding POST, (postHeartDelete)', err));
   });

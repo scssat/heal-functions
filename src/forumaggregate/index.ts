@@ -45,7 +45,7 @@ export const aggregateComments = functions.firestore
         console.log('POSTs comments aggreated!');
         return postRef
           .update(data)
-          .catch(err => console.log('Error when writing to post', err));
+          .catch(err => console.error('Error when writing to post', err));
       })
-      .catch(err => console.log('Error when reading comments', err));
+      .catch(err => console.error('Error when reading comments', err));
   });

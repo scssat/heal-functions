@@ -18,6 +18,6 @@ export const storyFollowerDelete = functions.firestore
         console.log('Story follower deleted & user updated!');
       })
       .catch(err =>
-        console.log('Error reding USER, (storyFollowerDelete)', err)
+        console.error('Error reding USER, (storyFollowerDelete)', err)
       );
   });

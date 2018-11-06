@@ -24,6 +24,7 @@ export const CUSTOMERS = 'customers';
 export const SUBSCRIPTION_PLANS = 'subscriptionPlans';
 export const STATUS_PAST_DUE = 'pastDue';
 export const STATUS_ACTIVE = 'active';
+export const MAX_BATCH_SIZE = 500;
 
 export const HASH_TAG_LIBRARY = 'hashTagLibrary';
 
@@ -144,6 +145,7 @@ export const enum NotificationTypes {
   CalendarReminder = 'CalendarReminder',
   NewPostGroup = 'NewPostGroup',
   StoryFollower = 'storyFollower',
+  MyStory = 'Mystory',
   ForumComment = 'ForumComment'
 }
 
@@ -151,6 +153,7 @@ export const enum NotificationTypesNo {
   FamilyPost = 'Støttepost',
   MyStoryComment = 'Kommentar til historie',
   DirectMessage = 'Melding fra bruker',
+  MyStory = 'Mystory',
   Forum = 'Forum',
   InternalEmail = 'Intern email',
   Calendar = 'Kalender',

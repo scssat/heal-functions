@@ -32,10 +32,10 @@ export const sendPushNotification = functions.firestore
         user.numberOfNotifications++;
         userRef
           .update(user)
-          .catch(err => console.log('Error when updating user', err));
+          .catch(err => console.error('Error when updating user', err));
 
         console.log('Notification sent to user:', userid);
         return admin.messaging().sendToDevice(tokens, payload);
       })
-      .catch(err => console.log(err));
+      .catch(err => console.error(err));
   });

@@ -1,5 +1,5 @@
-import * as functions from "firebase-functions";
-import * as admin from "firebase-admin";
+import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
 
 // This function keeps track of the length of the message
 // trail, max messages = 200;
@@ -9,7 +9,7 @@ const settings = { timestampsInSnapshots: true };
 db.settings(settings);
 
 export const archiveChat = functions.firestore
-  .document("chatrooms/{chatId}")
+  .document('chatrooms/{chatId}')
   .onUpdate(change => {
     const data = change.after.data();
 
@@ -23,7 +23,7 @@ export const archiveChat = functions.firestore
     if (charLen >= 10000 || msgLen >= maxLen) {
       data.messages.splice(0, msgLen - maxLen);
       //console.log(data.messages.length);
-      const ref = db.collection("chatrooms").doc(change.after.id);
+      const ref = db.collection('chatrooms').doc(change.after.id);
 
       batch.set(ref, data, { merge: true });
 

@@ -1,6 +1,13 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
-//import * as _ from 'lodash'; //NiU, but will be used to create chunks/batches
+import * as algoliasearch from 'algoliasearch';
+
+// Initialize the Algolia Client
+const env = functions.config();
+const client = algoliasearch(env.algolia.appid, env.algolia.apikey);
+const index = client.initIndex('forumPosts');
+
+import * as _ from 'lodash';
 const db = admin.firestore();
 import * as shared from '../collections';
 
@@ -8,6 +15,8 @@ export const postCreate = functions.firestore
   .document(`${shared.MBH_FORUM}/{id}`)
   .onCreate(async (snap, context) => {
     const post = snap.data();
+    const objectID = snap.id;
+    //const id = context.params.id;
 
     const forumGroupRef = db
       .collection(shared.FORUM_GROUPS)
@@ -22,66 +31,81 @@ export const postCreate = functions.firestore
         forumGroupRef
           .update(forumGroup)
           .catch(err =>
-            console.log('ERROR - UPDATING FORUM GROUP (post create):', err)
+            console.error('ERROR - UPDATING FORUM GROUP (post create):', err)
           );
       })
       .catch(err =>
-        console.log('Error reding FOLLOW USER, (post create)', err)
+        console.error('Error reading FOLLOW USER, (post create)', err)
       );
 
-    const forumGroupFollwersRef = db
-      .collection(shared.FORUM_GROUPS)
-      .where('followedGroup', '==', post.forumGroup);
+    const notification = {
+      created: Date.now(),
+      from: 'Forum:' + post.forumGroup,
+      description: 'Ny post på forum:' + post.title,
+      type: shared.NotificationTypesNo.Forum,
+      link: '',
+      id: ''
+    };
 
-    return db
-      .runTransaction(transaction => {
-        return transaction
-          .get(forumGroupFollwersRef)
-          .then(followerData => {
-            followerData.forEach(doc => {
-              const followerRelationship = doc.data();
-              // CREATE NOTIFICATION
-              if (doc.data().size > 500) {
-                // Transaction must be split into chunks or batches.
-                console.log(
-                  'Forum group notification is not complete, number of followers > 500'
-                );
-              }
-
-              const notRef = db.collection(
-                `users/${followerRelationship.followerid}/notifications`
+    try {
+      const groupFollowers = await getUserFollowersIds(post.forumGroup);
+      if (groupFollowers.length > 0) {
+        //Generate the right amount of batches
+        const batches = _.chunk(groupFollowers, shared.MAX_BATCH_SIZE).map(
+          userIds => {
+            const writeBatch = db.batch();
+            userIds.forEach(userId => {
+              const notifid =
+                userId +
+                '_' +
+                post.forumGroup +
+                '_' +
+                new Date().getTime().toString();
+              writeBatch.set(
+                db
+                  .collection('users')
+                  .doc(userId)
+                  .collection('notifications')
+                  .doc(notifid),
+                notification
               );
-
-              const notification = {
-                created: new Date(),
-                from: 'Forum:' + post.forumGroup,
-                description: 'Ny post på forum:' + post.title,
-                type: shared.NotificationTypesNo.Forum,
-                link: '',
-                id: ''
-              };
-
-              createNotification(notification, notRef).catch(err => {
-                console.log(`Error - create notifications! - ${err}`);
-              });
             });
-          })
-          .catch(err => {
-            console.log(`Error updating forum groups! - ${err}`);
-          });
+            return writeBatch.commit();
+          }
+        );
+
+        await Promise.all(batches);
+        console.log('The feed of ', groupFollowers.length, ' have been update');
+      }
+    } catch (err) {
+      console.error(
+        'Failed updating follwed users group:',
+        post.forumGroup,
+        'with error:',
+        err
+      );
+    }
+
+    // Add the data to the algolia index
+    const searchContent = {
+      displayUser: post.displayUser,
+      hashTags: post.hashTags,
+      forumGroup: post.forumGroup,
+      content: post.content
+    };
+
+    return index
+      .addObject({
+        objectID,
+        ...searchContent
       })
-      .then(() => {
-        console.log('Transaction uupdate successfully completed!');
-      })
-      .catch(err => {
-        console.log(`Error in transaction updating forum group! - ${err}`);
-      });
+      .catch(err => console.log('Error when creating Algolia index', err));
   });
 
-async function createNotification(notification, notRef: any) {
-  await notRef
-    .add(notification)
-    .catch(err =>
-      console.log('ERROR - Creating notification (create post):', err)
-    );
+async function getUserFollowersIds(forumGroup: string): Promise<string[]> {
+  const forumGroupFollwersRef = db
+    .collection(shared.FORUM_GROUPS)
+    .where('followedGroup', '==', forumGroup);
+  const followers = await forumGroupFollwersRef.get();
+  return followers.docs.map(followerSnapshot => followerSnapshot.id);
 }

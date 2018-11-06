@@ -1,0 +1,1 @@
+export { storyCreate } from './create';
