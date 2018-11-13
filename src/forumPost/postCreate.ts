@@ -90,8 +90,9 @@ export const postCreate = functions.firestore
     const searchContent = {
       displayUser: post.displayUser,
       hashTags: post.hashTags,
+      title: post.title,
       forumGroup: post.forumGroup,
-      content: post.content
+      content: post.strippedContent
     };
 
     return index

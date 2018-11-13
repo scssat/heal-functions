@@ -18,12 +18,13 @@ export const postUpdate = functions.firestore
     const updateContent = {
       displayUser: post.displayUser,
       hashTags: post.hashTags,
+      title: post.title,
       forumGroup: post.forumGroup,
-      content: post.content
+      content: post.strippedContent
     };
 
     return index
-      .updateObject({
+      .saveObject({
         objectID,
         ...updateContent
       })
