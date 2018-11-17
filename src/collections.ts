@@ -92,10 +92,11 @@ export const MY_MEDICATION_COMPLIANCE = 'myMedicationCompliance';
 export const MY_VIDEO_LINKS = 'videoLinks';
 export const MY_LINKS = 'mylinks';
 export const MY_DIARY = 'diaries';
-export const MY_IMAGES = 'images';
-export const MY_DOCUMENTS = 'documents';
 export const MY_INCOMMING_MESSAGES = 'mymessages';
 export const MY_DIAGNOSE = 'diagnose';
+
+export const MY_IMAGES = 'images';
+export const MY_DOCUMENTS = 'documents';
 export const MY_AVATARS = 'myAvatars';
 
 // System storage paths

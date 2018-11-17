@@ -1,23 +1,35 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
-import * as mbhCollection from '../collections';
+import * as shared from '../collections';
+import * as Storage from '@google-cloud/storage';
+const gcs = new Storage();
 
 admin.initializeApp();
 const db = admin.firestore();
 import * as Stripe from 'stripe';
 const stripe = new Stripe(functions.config().stripe.secret);
 
-export const userCreate = functions.firestore
-  .document('users/{userId}')
-  .onCreate((snap, context) => {
-    //const email = context.params.userId;
+
+export const  userCreate =  functions.firestore
+  .document('users/{uid}')
+  .onCreate (async (snap, context) => {
+    //const uid = context.params.uid;
     const user = snap.data();
 
-    const userRef = db.collection('users').doc(user.email);
+    const userRef = db.collection('users').doc(user.uid);
 
     console.log('INIT new user start');
 
-    copyAll(user.email).catch(err =>
+    // Create storage buckets. Disabled until further investigated!
+    // user.avatarBucket = uuidv4() + '_' + shared.MY_AVATARS + '_' + new Date().getSeconds().toString;
+    // user.imageBucket = uuidv4() + '_' + shared.MY_IMAGES + '_' + new Date().getSeconds().toString;
+    // user.documentBucket = uuidv4() + '_' + shared.MY_DOCUMENTS  + '_' + new Date().getSeconds().toString;
+
+    // createBucket(user.avatarBucket);
+    // createBucket(user.imageBucket);
+    // createBucket(user.documentBucket);
+
+    await copyAll(user.uid).catch(err =>
       console.error('Error copying user data!', err)
     );
 
@@ -35,140 +47,38 @@ export const userCreate = functions.firestore
       });
   });
 
-async function copyAll(email: string) {
-  await createVideolinks(email);
-  await createLinks(email);
-  await createMedication(email);
-  await createMeasurements(email);
-  await createNutriant(email);
-  await createNutridrink(email);
-  await createRecipes(email);
+  // If used...replace with uuid-4 import
+  function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+    async function createBucket(bucketName) {
+    // Creates a new bucket, each user have 3 buckets, AVATARS, IMAGES and DOCUMENTS
+    // Location is Finland
+    await gcs.createBucket(bucketName, {
+      location: 'europe-north1',
+      storageClass: 'MULTI_REGIONAL',
+    }).catch(err => console.error(`Error crating storage bucket ${bucketName} created.  - Error: ${err}`));
+
+    console.log(`Bucket ${bucketName} created.`);
+    // [END storage_create_bucket]
+  }
+
+async function copyAll(uid: string) {
+  await createMeasurements(uid);
+  await createRecipes(uid);
 }
 
-function setEmptyVideoLink() {
-  const emptyVideoLink = {
-    id: '',
-    name: '',
-    category: '',
-    cancerTypes: '',
-    lastVisit: null,
-    link: '',
-    title: '',
-    description: '',
-    thumbnailUrl: ''
-  };
-  return emptyVideoLink;
-}
 
-function setEmptyLink() {
-  const emptyLink = {
-    id: '',
-    lastVisit: null,
-    name: '',
-    category: '',
-    link: '',
-    cancerTypes: '',
-    description: ''
-  };
-  return emptyLink;
-}
-
-function createVideolinks(email: string): Promise<any> {
-  // Video links
-  const videoLibrary = db
-    .collection(mbhCollection.VIDEO_LINK_LIBRARY)
-    .orderBy('name', 'asc');
-  const userVideoLibrary = db.collection(
-    `users/${email}/${mbhCollection.MY_VIDEO_LINKS}`
-  );
-
-  return videoLibrary
-    .get()
-    .then(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        const newLink = setEmptyVideoLink();
-        const link = doc.data();
-        newLink.id = '';
-        newLink.name = link.name;
-        newLink.category = link.category ? link.category : '';
-        newLink.cancerTypes = link.cancerTypes ? link.cancerTypes : '';
-        newLink.lastVisit = null;
-        newLink.link = link.link;
-        newLink.title = link.title ? link.title : '';
-        newLink.description = link.description ? link.description : '';
-        newLink.thumbnailUrl = link.thumbnailUrl ? link.thumbnailUrl : '';
-        userVideoLibrary.add(newLink);
-      });
-    })
-    .catch(err => console.error('Error creating user video links', err));
-}
-
-function createLinks(email: string): Promise<any> {
-  //General links
-  const linkLibrary = db
-    .collection(mbhCollection.LINK_LIBRARY)
-    .orderBy('name', 'asc');
-  const userLinkLibrary = db.collection(
-    `users/${email}/${mbhCollection.MY_LINKS}`
-  );
-
-  return linkLibrary
-    .get()
-    .then(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        const newLink = setEmptyLink();
-        const link = doc.data();
-        newLink.id = '';
-        newLink.name = link.name;
-        newLink.category = link.category ? link.category : '';
-        newLink.cancerTypes = link.cancerTypes ? link.cancerTypes : '';
-        newLink.lastVisit = null;
-        newLink.link = link.link;
-        newLink.description = link.description ? link.description : '';
-        userLinkLibrary.add(newLink);
-      });
-    })
-    .catch(err => console.error('Error creating user general links', err));
-}
-
-function createMedication(email: string): Promise<any> {
-  // Copy MEDICATION from library
-  const medcationLibrary = db
-    .collection(mbhCollection.MEDICATION_LIBRARY)
-    .orderBy('medicationName', 'asc');
-  const userMedcationLibrary = db.collection(
-    `users/${email}/${mbhCollection.MY_MEDICATION_LIBRARY}`
-  );
-
-  return medcationLibrary
-    .get()
-    .then(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        const medicationLibrary = doc.data();
-        const myMedicationLibrary = {
-          id: '',
-          medicationLibId: medicationLibrary.id,
-          custom: false,
-          deleteAllowed: true,
-          medicationName: medicationLibrary.medicationName,
-          medicationURL: medicationLibrary.medicationURL,
-          leafletURL: medicationLibrary.leafletURL,
-          pictureURL: medicationLibrary.pictureURL,
-          interactionURL: medicationLibrary.interactionURL
-        };
-        userMedcationLibrary.add(myMedicationLibrary);
-      });
-    })
-    .catch(err => console.error('Error creating user medication library', err));
-}
-
-function createMeasurements(email: string): Promise<any> {
+function createMeasurements(uid: string): Promise<any> {
   // Copy MEASUREMENTS from library
   const measurementLibrary = db
-    .collection(mbhCollection.MEASUREMENT_LIBRARY)
+    .collection(shared.MEASUREMENT_LIBRARY)
     .orderBy('medicationName', 'asc');
   const userMeasurementLibrary = db.collection(
-    `users/${email}/${mbhCollection.MY_MEDICATION_LIBRARY}`
+    `users/${uid}/${shared.MY_MEDICATION_LIBRARY}`
   );
 
   return measurementLibrary
@@ -204,103 +114,13 @@ function createMeasurements(email: string): Promise<any> {
     );
 }
 
-function createNutriant(email: string): Promise<any> {
-  // Copy nutrition library
-  const nutriantLibrary = db
-    .collection(mbhCollection.NUTRIANT_LIBRARY)
-    .orderBy('name', 'asc');
-  const userNutriantLibrary = db.collection(
-    `users/${email}/${mbhCollection.MY_NUTRIANT_LIBRARY}`
-  );
-
-  return nutriantLibrary
-    .get()
-    .then(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        const nutritionLibrary = doc.data();
-        const myNutritionLibrary = {
-          id: '',
-          type: nutritionLibrary.type,
-          name: nutritionLibrary.name,
-          KCAL: nutritionLibrary.KCAL,
-          protein: nutritionLibrary.protein,
-          fiber: nutritionLibrary.fiber,
-          favorite: false,
-          fat: nutritionLibrary.fat,
-          dosagePerDay: nutritionLibrary.dosagePerDay,
-          content: nutritionLibrary.content,
-          manufactor:
-            nutritionLibrary.manufactor === undefined
-              ? ''
-              : nutritionLibrary.manufactor,
-          manufactorURL:
-            nutritionLibrary.manufactorURL === undefined
-              ? ''
-              : nutritionLibrary.manufactorURL,
-          contentURL:
-            nutritionLibrary.contentURL === undefined
-              ? ''
-              : nutritionLibrary.contentURL,
-          karb: nutritionLibrary.karb === undefined ? 0 : nutritionLibrary.karb,
-          salt: nutritionLibrary.salt === undefined ? 0 : nutritionLibrary.salt
-        };
-
-        userNutriantLibrary.add(myNutritionLibrary);
-      });
-    })
-    .catch(err => console.error('Error creating user nutriant library', err));
-}
-
-function createNutridrink(email: string): Promise<any> {
-  // Copy nutridrink library
-  const nutridrinkLibrary = db
-    .collection(mbhCollection.NUTRIANT_SUPPLEMENT)
-    .orderBy('name', 'asc');
-  const userNutridrinkLibrary = db.collection(
-    `users/${email}/${mbhCollection.MY_NUTRIDRINK_LIBRARY}`
-  );
-
-  return nutridrinkLibrary
-    .get()
-    .then(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        const nutridrink = doc.data();
-        const myNutridrink = {
-          id: '',
-          type: nutridrink.type,
-          name: nutridrink.name,
-          KCAL: nutridrink.KCAL,
-          protein: nutridrink.protein,
-          fiber: nutridrink.fiber,
-          favorite: false,
-          fat: nutridrink.fat,
-          dosagePerDay: nutridrink.dosagePerDay,
-          nutritionUnit: nutridrink.nutritionUnit,
-          contentPerUnit: nutridrink.contentPerUnit,
-          manufactor:
-            nutridrink.manufactor === undefined ? '' : nutridrink.manufactor,
-          manufactorURL:
-            nutridrink.manufactorURL === undefined
-              ? ''
-              : nutridrink.manufactorURL,
-          contentURL:
-            nutridrink.contentURL === undefined ? '' : nutridrink.contentURL,
-          karb: nutridrink.karb === undefined ? 0 : nutridrink.karb,
-          salt: nutridrink.salt === undefined ? 0 : nutridrink.salt
-        };
-        userNutridrinkLibrary.add(myNutridrink);
-      });
-    })
-    .catch(err => console.error('Error creating user nutriant library', err));
-}
-
-function createRecipes(email: string): Promise<any> {
+function createRecipes(uid: string): Promise<any> {
   // Copy recipe library
   const recipeLibrary = db
-    .collection(mbhCollection.RECIPE)
+    .collection(shared.RECIPE)
     .orderBy('name', 'asc');
   const userRecipeLibrary = db.collection(
-    `users/${email}/${mbhCollection.MY_RECIPE}`
+    `users/${uid}/${shared.MY_RECIPE}`
   );
 
   return recipeLibrary
@@ -352,9 +172,9 @@ function createRecipes(email: string): Promise<any> {
 
 function createIngredient(newId, mainId: string): Promise<any> {
   const ingredientLibraryCollection = db
-    .collection(mbhCollection.RECIPE)
+    .collection(shared.RECIPE)
     .doc(mainId)
-    .collection(mbhCollection.INGRIDENT);
+    .collection(shared.INGRIDENT);
 
   return ingredientLibraryCollection
     .get()
