@@ -28,9 +28,6 @@ export const MAX_BATCH_SIZE = 500;
 
 export const HASH_TAG_LIBRARY = 'hashTagLibrary';
 
-//Stripe
-export const STRIPE_PLAN_ID = 'plan_DsJ6iJphx8orgO';
-
 // NIU
 export const TASKS = 'tasks';
 
@@ -74,6 +71,7 @@ export const MBH_FORUM_HEARTS = 'forumHeart';
 export const MBH_FORUM_COMMENTS = 'forumcomments';
 export const MBH_FOLLOWER_FORUM = 'forumRelationships';
 export const MBH_FORUM_HASHTAG = 'forumHashtag';
+export const FORUM_REPORT_ABUSE = 'reportAbuse';
 
 export const HEALTH_PROFILE = 'healthProfile';
 
@@ -92,19 +90,23 @@ export const MY_MEDICATION_COMPLIANCE = 'myMedicationCompliance';
 export const MY_VIDEO_LINKS = 'videoLinks';
 export const MY_LINKS = 'mylinks';
 export const MY_DIARY = 'diaries';
-export const MY_INCOMMING_MESSAGES = 'mymessages';
-export const MY_DIAGNOSE = 'diagnose';
-
 export const MY_IMAGES = 'images';
 export const MY_DOCUMENTS = 'documents';
+export const MY_INCOMMING_MESSAGES = 'mymessages';
+export const MY_DIAGNOSE = 'diagnose';
 export const MY_AVATARS = 'myAvatars';
+export const HEAL_AVATARS = 'healAvatars';
 
-// System storage paths
+// System storage paths - NOT IN USE IN STAGE ENV
 export const PROFILE_PICTS = 'profilepicts';
+
+//Stripe
+export const STRIPE_PLAN_ID = 'plan_DsJ6iJphx8orgO';
 
 // User storage paths
 export const PROFILE_PATH = 'profilepicts';
 export const IMAGES_PATH = 'myimages';
+export const HEAL_AVATARS_PATH = 'heal_avatars';
 export const DOCUMENTS_PATH = 'mydocuments';
 
 export const USERTYPE_DEFAULT = 'Regulær';
@@ -118,7 +120,7 @@ export const USERTYPE_CANCER_NURSE = 'Kreftsykepleier';
 
 export const MY_IMAGE_DIRECTORY = 'assets/photos/';
 export const MY_DOCUMENT_DIRECTORY = 'assets/documents/';
-export const MY_PROFILE_IMAGE_DIRECTORY = 'assets/images/';
+export const MY_PROFILE_IMAGE_DIRECTORY = 'assets/avatars/';
 
 export const TOASTR_SUCCESS = 'success';
 export const TOASTR_INFO = 'info';
@@ -126,15 +128,11 @@ export const TOASTR_ERROR = 'error';
 export const TOASTR_WARNING = 'warning';
 export const TOASTR_INFO_CLICK = 'infoClick';
 
-export const weekDays = [
-  'Søndag',
-  'Mandag',
-  'Tirsdag',
-  'Onsdag',
-  'Torsdag',
-  'Fredag',
-  'Lørdag'
-];
+export const ABUSE_REPORT_NOT_OPENED = 'Not Opened';
+export const ABUSE_REPORT_IN_PROGRESS = 'In Progress';
+export const ABUSE_REPORT_CLOSED = 'Colsed';
+
+export const weekDays = ['Søndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag'];
 
 export const enum NotificationTypes {
   FamilyPost = 'Support',
@@ -146,7 +144,6 @@ export const enum NotificationTypes {
   CalendarReminder = 'CalendarReminder',
   NewPostGroup = 'NewPostGroup',
   StoryFollower = 'storyFollower',
-  MyStory = 'Mystory',
   ForumComment = 'ForumComment'
 }
 

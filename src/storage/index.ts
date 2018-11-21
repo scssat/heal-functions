@@ -1,1 +1,1 @@
-export { resizeAvatar } from './resizeAvatar';
+export { resizeImage } from './resize';

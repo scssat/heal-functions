@@ -1,4 +1,5 @@
 export { userCreate, userUpdate } from './usercreate'; // Includes initializeApp()
+export { resizeImage } from './storage';
 export {
   supportNotification,
   storyCommentNotification,
@@ -15,7 +16,4 @@ export { storyFollowerCreate, storyFollowerDelete } from './storyFollower';
 export { archiveChat } from './chatrooms';
 export { postCreate, postUpdate, postDelete } from './forumPost';
 export { storyCreate } from './story';
-export {
-  forumGroupFollowerCreate,
-  forumGroupFollowerDelete
-} from './postFollow';
+export { forumGroupFollowerCreate, forumGroupFollowerDelete } from './postFollow';
