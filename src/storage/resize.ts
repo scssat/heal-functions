@@ -23,7 +23,7 @@ export const resizeImage = functions.storage.object().onFinalize(async (object, 
   const fileName = filePath.split('/').pop();
   const tmpFilePath = join(tmpdir(), fileName);
 
-  if (fileName.includes('avatar_')) {
+  if (fileName.includes('resized_')) {
     console.log('Exiting function with OK, to prevent ENDLESS LOOP.....');
     return false;
   }
@@ -65,17 +65,9 @@ export const resizeImage = functions.storage.object().onFinalize(async (object, 
     }
   }
 
-  // Check if file is an AVATAR
-  if (!filePath.includes(shared.HEAL_AVATARS_PATH) && !filePath.includes(shared.MY_AVATARS)) {
-    console.log('Exiting function - no AVATAR-', filePath);
-    return false;
-  }
-
-  console.log('Download to tmp prepare....');
-  const imageFileName = 'avatar_' + fileName;
-  const tmpImagePath = join(tmpdir(), imageFileName);
-
-  console.log('Download to tmp....');
+  console.log('Download to tmp ....');
+  const resizedImageFileName = 'resized_' + fileName;
+  const tmpResizedImagePath = join(tmpdir(), resizedImageFileName);
 
   await bucket
     .file(filePath)
@@ -88,22 +80,23 @@ export const resizeImage = functions.storage.object().onFinalize(async (object, 
 
   await sharp(tmpFilePath)
     .resize(100, 100)
-    .toFile(tmpImagePath)
+    .toFile(tmpResizedImagePath)
     .catch(err => console.error('Error from SHARP - reseizing:', err));
 
-  const imageFilePath = join(dirname(filePath), imageFileName);
+  const resizedImageFilePath = join(dirname(filePath), resizedImageFileName);
 
   console.log('Uplodad finale....');
   await bucket
-    .upload(tmpImagePath, {
-      destination: imageFilePath
+    .upload(tmpResizedImagePath, {
+      destination: resizedImageFilePath
     })
     .catch(err => console.error('Error saving AVATAR', err));
 
   // Once the image has been uploaded delete the local files to free up disk space.
-  console.log('Delete temps....');
+
+  console.log('Delete temps and orig file....');
   fs.unlinkSync(tmpFilePath);
-  fs.unlinkSync(tmpImagePath);
+  fs.unlinkSync(tmpResizedImagePath);
 
   // Delete orig file from bucket
   await bucket
@@ -111,7 +104,7 @@ export const resizeImage = functions.storage.object().onFinalize(async (object, 
     .delete()
     .catch(err => console.error('Error when deleting original file:', err));
 
-  const imageFile = bucket.file(imageFilePath);
+  const imageFile = bucket.file(resizedImageFilePath);
 
   // Get the Signed URLs for the reduced avatar
   const config = {
@@ -131,8 +124,8 @@ export const resizeImage = functions.storage.object().onFinalize(async (object, 
   switch (type) {
     case 'avatar':
       docData = {
-        fileName: imageFileName,
-        path: imageFilePath,
+        fileName: resizedImageFileName,
+        path: resizedImageFilePath,
         avatarURL: imageFileURL,
         system: system,
         created: new Date()
@@ -141,10 +134,10 @@ export const resizeImage = functions.storage.object().onFinalize(async (object, 
     case 'document':
       docData = {
         id: '',
-        title: imageFileName,
-        path: imageFilePath,
+        title: resizedImageFileName,
+        path: resizedImageFilePath,
         url: imageFileURL,
-        searchstring: imageFileName,
+        searchstring: resizedImageFileName,
         contactPerson: '',
         description: '',
         documentDate: null,
@@ -154,8 +147,8 @@ export const resizeImage = functions.storage.object().onFinalize(async (object, 
     case 'image':
       docData = {
         id: '',
-        title: imageFileName,
-        path: imageFilePath,
+        title: resizedImageFileName,
+        path: resizedImageFilePath,
         url: imageFileURL,
         created: new Date()
       };
