@@ -43,7 +43,7 @@ export const resizeImage = functions.storage.object().onFinalize(async (object, 
     imageRef = db.collection(shared.HEAL_AVATARS);
   } else {
     system = false;
-    const uid = filePath.substring(0, filePath.indexOf('/'));
+    const uid = filePath.substring(5, filePath.indexOf('/', 5));
     if (filePath.includes(shared.MY_AVATARS)) {
       width = 100;
       height = 100;
