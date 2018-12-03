@@ -16,12 +16,12 @@ import * as sharp from 'sharp';
 // Sizes: images wide 550, height 500
 // Sharpe input: wide, height
 export const resizeImage = functions.storage.object().onFinalize(async (object, context) => {
+  console.log('Starting resizing.....');
   const bucket = gcs.bucket(object.bucket);
+
   const filePath = object.name;
   const fileName = filePath.split('/').pop();
   const tmpFilePath = join(tmpdir(), fileName);
-
-  console.log('Starting resizing:', filePath);
 
   if (fileName.includes('resized_')) {
     console.log('Exiting function with OK, to prevent ENDLESS LOOP.....');
@@ -60,7 +60,7 @@ export const resizeImage = functions.storage.object().onFinalize(async (object, 
       type = 'document';
       imageRef = db.collection(`users/${uid}/${shared.MY_DOCUMENTS}`);
     } else {
-      console.log('Exiting function - not a valid filepath', filePath);
+      console.log('Exiting function - not a valid filpath', filePath);
       return false;
     }
   }

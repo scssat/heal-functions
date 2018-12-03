@@ -3,16 +3,16 @@ import * as functions from 'firebase-functions';
 const db = admin.firestore();
 
 export const supportNotification = functions.firestore
-  .document('users/{userEmail}/familyposts/{myfamId}')
+  .document('users/{uid}/familyposts/{myfamId}')
   .onCreate(async (snap, context) => {
-    const userEmail = context.params.userEmail;
+    const uid = context.params.uid;
     const post = snap.data();
 
     if (post.owner) {
       return null;
     }
 
-    const notRef = db.collection(`users/${userEmail}/notifications`);
+    const notRef = db.collection(`users/${uid}/notifications`);
 
     const notification = {
       created: new Date(),
@@ -25,7 +25,5 @@ export const supportNotification = functions.firestore
 
     console.log('Support comment notification created!');
 
-    return notRef
-      .add(notification)
-      .catch(err => console.error('ERROR - Create notification:', err));
+    return notRef.add(notification).catch(err => console.error('ERROR - Create notification:', err));
   });

@@ -8,10 +8,10 @@ export const internalMessageNotification = functions.firestore
   .onCreate(async (snap, context) => {
     const message = snap.data();
     const title = message.title;
-    const email = context.params.userId;
+    const uid = context.params.userId;
     const messageId = context.params.messageId;
 
-    const notRef = db.collection(`users/${email}/notifications`);
+    const notRef = db.collection(`users/${uid}/notifications`);
     const notification = {
       created: new Date(),
       from: 'HEAL Sentral',
@@ -21,7 +21,5 @@ export const internalMessageNotification = functions.firestore
       id: messageId
     };
 
-    return notRef
-      .add(notification)
-      .catch(err => console.error('ERROR - Creating notification:', err));
+    return notRef.add(notification).catch(err => console.error('ERROR - Creating notification:', err));
   });

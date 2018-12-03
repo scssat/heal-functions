@@ -6,7 +6,6 @@ export {
   forumCommentNotification,
   internalMessageNotification
 } from './push-notifications';
-export { dmSendMessage } from './dmcreate';
 export { recurringPayment, reactiveateSubscription } from './stripe';
 export { aggregateComments } from './forumaggregate';
 export { aggregateStoryComments } from './storyaggregate';
