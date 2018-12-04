@@ -16,21 +16,15 @@ export const storyFollowerCreate = functions.firestore
       .get()
       .then(querySnapshot => {
         const followerUser = querySnapshot.data();
-        const followerDisplayUser = followerUser.useridForum;
+        const followerDisplayUser = followerUser.displayName;
 
         storyFollow.displayFollwedUser = followerDisplayUser;
-        storyFollow.followedAvatar = followerUser.avatarExt;
+        storyFollow.followedAvatar = followerUser.avatarUrl;
 
-        followedRef
-          .update(storyFollow)
-          .catch(err =>
-            console.log('ERROR - UPDATING follow relationship:', err)
-          );
+        followedRef.update(storyFollow).catch(err => console.log('ERROR - UPDATING follow relationship:', err));
 
         // CREATE NOTIFICATION
-        const notRef = db.collection(
-          `users/${storyFollow.followedid}/notifications`
-        );
+        const notRef = db.collection(`users/${storyFollow.followedid}/notifications`);
 
         const notification = {
           created: new Date(),
@@ -41,15 +35,9 @@ export const storyFollowerCreate = functions.firestore
           id: ''
         };
 
-        console.log(
-          'Story follower created, notification CREATED & user updated!'
-        );
+        console.log('Story follower created, notification CREATED & user updated!');
 
-        notRef
-          .add(notification)
-          .catch(err => console.error('ERROR - Creating notification:', err));
+        notRef.add(notification).catch(err => console.error('ERROR - Creating notification:', err));
       })
-      .catch(err =>
-        console.error('Error reding FOLLOW USER, (storyFollowerCreate)', err)
-      );
+      .catch(err => console.error('Error reding FOLLOW USER, (storyFollowerCreate)', err));
   });

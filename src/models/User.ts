@@ -9,7 +9,7 @@ export interface User {
   birthDate?: any;
   gender?: string;
   accessCode?: string;
-  useridForum?: string;
+  displayName?: string;
   email?: string;
   phone1?: string;
   phone2?: string;
@@ -20,7 +20,7 @@ export interface User {
   zipCode?: string;
   country?: string;
   countryPhone?: any; // For future use
-  avatarExt?: string;
+  avatarUrl?: string;
   agree?: boolean;
   agreeInfo?: boolean;
   agreeTerms?: boolean;
